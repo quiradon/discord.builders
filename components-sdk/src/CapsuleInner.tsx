@@ -2,10 +2,26 @@ import {COMPONENTS, SECTIONABLE} from "./Capsule";
 import CapsuleStyles from "./Capsule.module.css";
 import {CapsuleButton, capsuleButtonCtx} from "./CapsuleButton";
 import {SectionFrame} from "./components/Section";
-import {Fragment, ReactElement} from "react";
-import {stateKeyType, StateManager} from "./polyfills/StateManager"
+import { ReactElement, useEffect, useState } from 'react';
+import {stateKeyType, StateManager} from "./polyfills/StateManager";
 import {Component, ComponentType, PassProps} from "./utils/componentTypes";
-import TimesSolid from "./icons/times-solid.svg"
+import TimesSolid from "./icons/times-solid.svg";
+import {
+    SortableContext,
+    useSortable,
+    verticalListSortingStrategy,
+    sortableKeyboardCoordinates, arrayMove
+} from '@dnd-kit/sortable';
+import {
+    closestCenter,
+    DndContext,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors
+} from '@dnd-kit/core';
+import {CSS} from '@dnd-kit/utilities';
+import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 
 
 type commonProps = {
@@ -23,38 +39,74 @@ type props = {
 } & commonProps
 
 export function CapsuleInner({state, stateKey, stateManager, showSectionButton = true, removeKeyParent, passProps, buttonContext, buttonClassName}: props) {
+    const [items, setItems] = useState<string[]>([]);
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {distance: 5}
+        }),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        })
+    );
+
+    useEffect(() => {
+        setItems(state.map((comp) => comp._uuid));
+    }, [state]);
+
+    const handleDragEnd = (event: any) => {
+        const { active, over } = event;
+
+        if (active.id !== over.id) {
+            setItems(() => {
+                const oldIndex = items.indexOf(active.id);
+                const newIndex = items.indexOf(over.id);
+
+                stateManager.swapKey({key: stateKey, oldIndex: oldIndex, newIndex: newIndex});
+                return arrayMove(items, oldIndex, newIndex);
+            })
+        }
+    };
 
     return (
-        <>
-        {state.map((component, i) => <CapsuleInnerItem
-            key={`${component.id || i}`}
-            state={component}
-            stateKey={[...stateKey, i]}
-            stateManager={stateManager}
-            showSectionButton={showSectionButton}
-            removeKeyParent={removeKeyParent}
-            passProps={passProps}
-            buttonContext={buttonContext}
-        />)}
+        <DndContext sensors={sensors} onDragEnd={handleDragEnd} collisionDetection={closestCenter} modifiers={[restrictToVerticalAxis]}>
+            <SortableContext items={items} strategy={verticalListSortingStrategy}>
+                {state.map((comp, i) => <CapsuleInnerItem
+                    id={comp._uuid}
+                    key={comp._uuid}
+                    state={comp}
+                    stateKey={[...stateKey, i]}
+                    stateManager={stateManager}
+                    showSectionButton={showSectionButton}
+                    removeKeyParent={removeKeyParent}
+                    passProps={passProps}
+                    buttonContext={buttonContext}
+                />)}
+            </SortableContext>
+            <CapsuleButton context={buttonContext} className={buttonClassName} callback={value => stateManager.appendKey({key: stateKey, value})} />
 
-        <CapsuleButton context={buttonContext} className={buttonClassName} callback={value => stateManager.appendKey({key: stateKey, value})} />
-
-        {/* CapsuleButton is inline, so you can add more buttons after <CapsuleInner .../> */}
-
-        </>
+            {/* CapsuleButton is inline, so you can add more buttons after <CapsuleInner .../> */}
+        </DndContext>
     );
 }
 
 type itemProps = {
+    id: string,
     state: Component,
     stateKey: stateKeyType,
 } & commonProps;
 
-function CapsuleInnerItem({state, stateKey, stateManager, showSectionButton, removeKeyParent, passProps}: itemProps) {
+function CapsuleInnerItem({id, state, stateKey, stateManager, showSectionButton, removeKeyParent, passProps}: itemProps) {
     const Component = COMPONENTS[state.type];
     if (typeof Component === "undefined") return null;
 
-    return <div className={CapsuleStyles.component}>
+    // FIXME: Disable dragging when a menu is open or when editing a field `, disabled: true`
+    const {attributes, listeners, setNodeRef, transform, transition} = useSortable({id: id});
+    const style = {
+        transform: CSS.Translate.toString(transform),
+        transition,
+    };
+
+    return <div className={CapsuleStyles.component} ref={setNodeRef} style={style} {...attributes} {...listeners}>
         <div className={CapsuleStyles.component_remove} onClick={() => {
             if (state.type === 9 || state.type === 17) {
                 stateManager.deleteKey({key: stateKey, decoupleFrom: 'components', removeKeyParent});

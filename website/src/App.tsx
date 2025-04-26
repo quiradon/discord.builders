@@ -126,7 +126,7 @@ function App() {
         data = renderer({components: state}, undefined, importCallback);
         language = libs[libSelected]?.language || 'json';
     } else {
-        data = JSON.stringify(state, undefined, 4)
+        data = JSON.stringify(state, (key, value) => key.startsWith("_") ? undefined: value, 4)
     }
 
     return <div className={Styles.app}>

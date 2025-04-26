@@ -82,6 +82,7 @@ export interface UnfurledMediaItem {
 }
 
 export interface Component {
+  _uuid: string, // auto generated for internal use only
   type: ComponentType,
   id?: number //int32, auto generated via increment if not provided
 }

@@ -9,7 +9,7 @@ import ButtonIcon from "./icons/Button.svg";
 import LinkButtonIcon from "./icons/ButtonLink.svg";
 import SelectIcon from "./icons/Select.svg";
 import {default_settings} from "./Capsule";
-import {useCallback, useEffect, useRef, useState} from "react";
+import {useRef} from "react";
 import {Component} from "./utils/componentTypes";
 import { useStateOpen } from './utils/useStateOpen';
 
@@ -30,7 +30,7 @@ export function CapsuleButton({context, callback, className} : props) {
         <div className={Styles.large_button + cls} onClick={(ev) => {
             setOpen(!(btn_select.current && btn_select.current.contains(ev.target as HTMLElement)));
         }} ref={ignoreRef}>
-            <img  className={Styles.large_button_icon} src={Icons} alt=""/>
+            <img  className={Styles.large_button_icon} src={Icons} alt="" w/>
             {context === "main" && "Add component"}
             {context === "inline" && "Add inline component"}
             {context === "container" && "Add content"}
@@ -44,25 +44,25 @@ export function CapsuleButton({context, callback, className} : props) {
                     <div className={Styles.large_button_ctx_item_text}>Content</div>
                 </div>}
                 {['main'].includes(context) && <div className={Styles.large_button_ctx_item} onClick={() => {
-                    callback(default_settings.Container)
+                    callback(default_settings.Container())
                 }}>
                     <div className={Styles.large_button_ctx_item_img}><img src={ContainerIcon} alt=""/></div>
                     <div className={Styles.large_button_ctx_item_text}>Container</div>
                 </div>}
                 {['main', 'container'].includes(context) && <div className={Styles.large_button_ctx_item} onClick={() => {
-                    callback(default_settings.MediaGallery)
+                    callback(default_settings.MediaGallery())
                 }}>
                     <div className={Styles.large_button_ctx_item_img}><img src={MediaGalleryIcon} alt=""/></div>
                     <div className={Styles.large_button_ctx_item_text}>Image</div>
                 </div>}
                 {['main', 'container'].includes(context) && <div className={Styles.large_button_ctx_item} onClick={() => {
-                    callback(default_settings.File)
+                    callback(default_settings.File())
                 }}>
                     <div className={Styles.large_button_ctx_item_img}><img src={UploadIcon} alt=""/></div>
                     <div className={Styles.large_button_ctx_item_text}>File</div>
                 </div>}
                 {['main', 'container'].includes(context) && <div className={Styles.large_button_ctx_item} onClick={() => {
-                    callback(default_settings.Separator)
+                    callback(default_settings.Separator())
                 }}>
                     <div className={Styles.large_button_ctx_item_img}><img src={SeparatorIcon} alt=""/></div>
                     <div className={Styles.large_button_ctx_item_text}>Separator</div>
@@ -86,7 +86,7 @@ export function CapsuleButton({context, callback, className} : props) {
                     <div className={Styles.large_button_ctx_item_text}>Select menu</div>
                 </div>}
                 {['frame'].includes(context) && <div className={Styles.large_button_ctx_item} onClick={() => {
-                    callback(default_settings.Thumbnail)
+                    callback(default_settings.Thumbnail())
                 }}>
                     <div className={Styles.large_button_ctx_item_img}><img src={MediaGalleryIcon} alt=""/></div>
                     <div className={Styles.large_button_ctx_item_text}>Thumbnail</div>

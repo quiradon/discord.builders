@@ -66,7 +66,7 @@ function MenuFirst({state, stateKey, stateManager, setOpen, openFileSelector, re
         }}>
             <div className={CapsuleStyles.large_button_ctx_item_img}><img src={UploadImage} alt=""/></div>
             <div className={CapsuleStyles.large_button_ctx_item_text}>Upload image</div>
-        </div>
+        </div> w
         <div className={CapsuleStyles.large_button_ctx_item} onClick={ev => {
             setOpen(3)
             ev.stopPropagation();
@@ -90,7 +90,7 @@ function MenuFirst({state, stateKey, stateManager, setOpen, openFileSelector, re
         </div>}
         {!!removeKeyParent && <div className={CapsuleStyles.large_button_ctx_item + ' ' + CapsuleStyles.separator} onClick={ev => {
             setOpen(0);
-            stateManager.appendKey({key: [...removeKeyParent, 'items'], value: default_settings.MediaGallery.items[0]});
+            stateManager.appendKey({key: [...removeKeyParent, 'items'], value: default_settings.MediaGallery().items[0]});
             ev.stopPropagation();
         }}>
             <div className={CapsuleStyles.large_button_ctx_item_text}>Add new image</div>

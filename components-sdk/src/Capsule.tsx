@@ -65,6 +65,7 @@ const _StringSelect = () => ({
 
 export const default_settings = {
     Button: () => ({
+        _uuid: uuidv4(),
         type: 1,
         components: [{
             ..._Button,
@@ -73,6 +74,7 @@ export const default_settings = {
         }]
     }),
     LinkButton: () => ({
+        _uuid: uuidv4(),
         type: 1,
         components: [{
             ..._Button,
@@ -82,51 +84,58 @@ export const default_settings = {
         }]
     }),
     StringSelect: () => ({
+        _uuid: uuidv4(),
         type: 1,
         components: [_StringSelect()]
     }),
     TextDisplay: () => ({
+        _uuid: uuidv4(),
         type: 10,
         content: randomSentence(),
     }),
-    Thumbnail: {
+    Thumbnail: () => ({
+        _uuid: uuidv4(),
         type: 11,
         ..._Image
-    },
-    MediaGallery: {
+    }),
+    MediaGallery: () => ({
+        _uuid: uuidv4(),
         type: 12,
         items: [
             _Image
         ]
-    },
-    File: {
+    }),
+    File: () => ({
+        _uuid: uuidv4(),
         type: 13,
         file: {
             url: ''
         },
         spoiler: false,
-    },
-    Separator: {
+    }),
+    Separator: () => ({
+        _uuid: uuidv4(),
         type: 14,
         divider: true,
         spacing: SPACING_SMALL
-    },
-    Container: {
+    }),
+    Container: () => ({
+        _uuid: uuidv4(),
         type: 17,
         accent_color: null,
         spoiler: false,
         components: [],
-    },
+    }),
 } as {
     Button: () => ActionRowComponent<ButtonComponent>,
     LinkButton: () => ActionRowComponent<ButtonComponent>,
     StringSelect: () => ActionRowComponent<StringSelectComponent>,
     TextDisplay: () => TextDisplayComponent,
-    Thumbnail: ThumbnailComponent,
-    MediaGallery: MediaGalleryComponent,
-    Separator: SeparatorComponent,
-    Container:ContainerComponent,
-    File: FileComponent
+    Thumbnail: () => ThumbnailComponent,
+    MediaGallery: () => MediaGalleryComponent,
+    Separator: () => SeparatorComponent,
+    Container: () => ContainerComponent,
+    File: () => FileComponent
 }
 
 export type ComponentsProps = {

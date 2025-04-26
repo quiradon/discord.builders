@@ -1,7 +1,9 @@
 import {Component, stateKeyType, StateManager} from "components-sdk";
 import {configureStore, createSlice, PayloadAction} from '@reduxjs/toolkit'
+import { arrayMove } from '@dnd-kit/sortable';
 
 type wrapKeyType<T> = { key: stateKeyType; toArray: boolean; innerKey: string; value: T; };
+type swapKeyType = { key: stateKeyType; oldIndex: number, newIndex: number };
 type setKeyType<T> = { key: stateKeyType; value: T; };
 type appendKeyType<T> = { key: stateKeyType; value: T; };
 type deleteKeyType = {
@@ -29,22 +31,6 @@ export const displaySlice = createSlice({
         webhookResponse: null as object | null
     }),
     reducers: {
-        wrapKey(state, action: PayloadAction<wrapKeyType<any>>) {
-            const key = action.payload.key;
-            let current: any = state;
-            for (let i = 0; i < key.length; i++) {
-                if (i !== key.length - 1) {
-                    current = current[key[i]];
-                    continue;
-                }
-
-                current[key[i]] = {
-                    ...action.payload.value,
-                    [action.payload.innerKey]: action.payload.toArray ? [current[key[i]]] : current[key[i]]
-                }
-            }
-        },
-
         setKey(state, action: PayloadAction<setKeyType<any>>) {
             const key = action.payload.key;
             let current: any = state;
@@ -70,6 +56,35 @@ export const displaySlice = createSlice({
                 } else {
                     current = current[key[i]];
                 }
+            }
+        },
+
+        wrapKey(state, action: PayloadAction<wrapKeyType<any>>) {
+            const key = action.payload.key;
+            let current: any = state;
+            for (let i = 0; i < key.length; i++) {
+                if (i !== key.length - 1) {
+                    current = current[key[i]];
+                    continue;
+                }
+
+                current[key[i]] = {
+                    ...action.payload.value,
+                    [action.payload.innerKey]: action.payload.toArray ? [current[key[i]]] : current[key[i]]
+                }
+            }
+        },
+
+        swapKey(state, action: PayloadAction<swapKeyType>) {
+            const key = action.payload.key;
+            let current: any = state;
+            for (let i = 0; i < key.length; i++) {
+                if (i !== key.length - 1) {
+                    current = current[key[i]];
+                    continue;
+                }
+
+                current[key[i]] = arrayMove(current[key[i]], action.payload.oldIndex, action.payload.newIndex)
             }
         },
 
@@ -120,9 +135,9 @@ export class DisplaySliceManager implements StateManager {
         // it's possible to create variable for slice so many slices are available
     }
 
-    deleteKey(props: deleteKeyType) {
-        this.dispatch(displaySlice.actions.deleteKey(props));
-        console.log("deleteKey", props);
+    setKey<T>(props: setKeyType<T>) {
+        this.dispatch(displaySlice.actions.setKey(props));
+        console.log("setKey", props);
     }
 
     appendKey<T>(props: appendKeyType<T>) {
@@ -130,14 +145,22 @@ export class DisplaySliceManager implements StateManager {
         console.log("appendKey", props);
     }
 
-    setKey<T>(props: setKeyType<T>) {
-        this.dispatch(displaySlice.actions.setKey(props));
-        console.log("setKey", props);
-    }
 
     wrapKey<T>(props: wrapKeyType<T>) {
         this.dispatch(displaySlice.actions.wrapKey(props));
         console.log("wrapKey", props);
     }
+
+    swapKey(props: swapKeyType) {
+        this.dispatch(displaySlice.actions.swapKey(props));
+        console.log("swapKey", props);
+    }
+
+    deleteKey(props: deleteKeyType) {
+        this.dispatch(displaySlice.actions.deleteKey(props));
+        console.log("deleteKey", props);
+    }
+
+
 }
 
