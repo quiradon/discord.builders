@@ -30,7 +30,7 @@ export function CapsuleButton({context, callback, className} : props) {
         <div className={Styles.large_button + cls} onClick={(ev) => {
             setOpen(!(btn_select.current && btn_select.current.contains(ev.target as HTMLElement)));
         }} ref={ignoreRef}>
-            <img  className={Styles.large_button_icon} src={Icons} alt="" w/>
+            <img  className={Styles.large_button_icon} src={Icons} alt="" />
             {context === "main" && "Add component"}
             {context === "inline" && "Add inline component"}
             {context === "container" && "Add content"}
