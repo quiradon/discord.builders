@@ -46,6 +46,11 @@ const libs = {
     nyxx: {
         name: "Dart: nyxx",
         language: "dart"
+    },
+
+    discordjs: {
+        name: "JavaScript: discord.js",
+        language: "javascript"
     }
 } as {
     [name: string] : {
