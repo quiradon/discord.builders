@@ -25,6 +25,7 @@ import {
     TextDisplayComponent,
     ThumbnailComponent,
 } from "./utils/componentTypes";
+import { OpenCountProvider } from './utils/useStateOpen';
 
 export const SPACING_SMALL = 1;
 export const SPACING_LARGE = 2;
@@ -174,6 +175,7 @@ export function Capsule(props : {
     const cls = props.className ? ' ' + props.className : '';
 
     return <div className={Styles.preview + cls}>
+        <OpenCountProvider>
             <CapsuleInner
                 state={props.state}
                 stateKey={props.stateKey}
@@ -181,5 +183,6 @@ export function Capsule(props : {
                 buttonContext={'main'}
                 passProps={props}
             />
+        </OpenCountProvider>
         </div>
     }

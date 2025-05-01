@@ -22,6 +22,7 @@ import {
 } from '@dnd-kit/core';
 import {CSS} from '@dnd-kit/utilities';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
+import { useOpenCountContext } from './utils/useStateOpen';
 
 
 type commonProps = {
@@ -98,9 +99,9 @@ type itemProps = {
 function CapsuleInnerItem({id, state, stateKey, stateManager, showSectionButton, removeKeyParent, passProps}: itemProps) {
     const Component = COMPONENTS[state.type];
     if (typeof Component === "undefined") return null;
+    const { isOpen } = useOpenCountContext();
 
-    // FIXME: Disable dragging when a menu is open or when editing a field `, disabled: true`
-    const {attributes, listeners, setNodeRef, transform, transition} = useSortable({id: id});
+    const {attributes, listeners, setNodeRef, transform, transition} = useSortable({id: id, disabled: isOpen});
     const style = {
         transform: CSS.Translate.toString(transform),
         transition,
