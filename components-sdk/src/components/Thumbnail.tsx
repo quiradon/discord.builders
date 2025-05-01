@@ -66,7 +66,7 @@ function MenuFirst({state, stateKey, stateManager, setOpen, openFileSelector, re
         }}>
             <div className={CapsuleStyles.large_button_ctx_item_img}><img src={UploadImage} alt=""/></div>
             <div className={CapsuleStyles.large_button_ctx_item_text}>Upload image</div>
-        </div> w
+        </div>
         <div className={CapsuleStyles.large_button_ctx_item} onClick={ev => {
             setOpen(3)
             ev.stopPropagation();
