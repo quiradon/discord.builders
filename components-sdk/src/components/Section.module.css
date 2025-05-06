@@ -3,5 +3,13 @@
   grid-template-columns: 1fr min-content;
   gap: 1rem;
 
+  .right {
+    position: relative;
+  }
+
+  .left {
+    /*padding-left: calc(1rem + 5px);*/
+  }
+
 }
 

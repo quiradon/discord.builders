@@ -1,20 +1,20 @@
 import { Capsule, PassProps } from 'components-sdk';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import {useDispatch, useSelector} from "react-redux";
-import {actions, DisplaySliceManager, RootState} from "./state";
-import {BetterInput} from "./BetterInput";
-import {EmojiPicker} from "./EmojiPicker";
-import {EmojiShow} from "./EmojiShow";
-import Styles from './App.module.css'
-import {webhookImplementation} from "./webhook.impl";
-import {ErrorBoundary} from "react-error-boundary";
+import { useDispatch, useSelector } from 'react-redux';
+import { actions, DisplaySliceManager, RootState } from './state';
+import { BetterInput } from './BetterInput';
+import { EmojiPicker } from './EmojiPicker';
+import { EmojiShow } from './EmojiShow';
+import Styles from './App.module.css';
+import { webhookImplementation } from './webhook.impl';
+import { ErrorBoundary } from 'react-error-boundary';
 import { ColorPicker } from './ColorPicker';
 import { ClientFunction, IncludeCallback } from 'ejs';
 import { CodeBlock, dracula } from 'react-code-blocks';
 
 const codegenModules: {
-    [name: string]: {default: ClientFunction}
-} = import.meta.globEager('./codegen/**/*.ejs')
+    [name: string]: { default: ClientFunction };
+} = import.meta.globEager('./codegen/**/*.ejs');
 
 const libComponents: {[name: string]: ClientFunction} = {};
 
@@ -142,11 +142,13 @@ function App() {
         data = JSON.stringify(state, undefined, 4)
     }
 
+    const stateKey = useMemo(() => ['data'], [])
+
     return <div className={Styles.app}>
         <ErrorBoundary fallback={<></>}>
             <Capsule state={state}
                      stateManager={stateManager}
-                     stateKey={['data']}
+                     stateKey={stateKey}
                      passProps={passProps}
                      className={Styles.preview}
             />

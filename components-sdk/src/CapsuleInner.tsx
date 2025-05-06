@@ -1,40 +1,44 @@
-import {COMPONENTS, SECTIONABLE} from "./Capsule";
-import CapsuleStyles from "./Capsule.module.css";
-import {CapsuleButton, capsuleButtonCtx} from "./CapsuleButton";
-import {SectionFrame} from "./components/Section";
-import {Fragment, ReactElement} from "react";
-import {stateKeyType, StateManager} from "./polyfills/StateManager"
-import {Component, ComponentType, PassProps} from "./utils/componentTypes";
-import TimesSolid from "./icons/times-solid.svg"
-
+import { COMPONENTS, SECTIONABLE } from './Capsule';
+import CapsuleStyles from './Capsule.module.css';
+import { CapsuleButton, capsuleButtonCtx } from './CapsuleButton';
+import { SectionFrame } from './components/Section';
+import { ReactElement, useMemo } from 'react';
+import { stateKeyType, StateManager } from './polyfills/StateManager';
+import { Component, ComponentType, PassProps } from './utils/componentTypes';
+import TimesSolid from './icons/times-solid.svg';
+import { DragLines } from './drag/DragLine';
+import { DroppableID } from './drag/components';
 
 type commonProps = {
-    showSectionButton?: boolean,
-    stateManager: StateManager,
-    removeKeyParent?: stateKeyType,
-    passProps: PassProps,
-    buttonContext: capsuleButtonCtx,
-    buttonClassName?: string
-}
+    showSectionButton?: boolean;
+    stateManager: StateManager;
+    removeKeyParent?: stateKeyType;
+    passProps: PassProps;
+    buttonContext: capsuleButtonCtx;
+    droppableId: DroppableID;
+};
 
 type props = {
     state: Component[],
     stateKey: stateKeyType,
+    buttonClassName?: string,
 } & commonProps
 
-export function CapsuleInner({state, stateKey, stateManager, showSectionButton = true, removeKeyParent, passProps, buttonContext, buttonClassName}: props) {
+export function CapsuleInner({state, stateKey, stateManager, showSectionButton = true, removeKeyParent, passProps, buttonContext, buttonClassName, droppableId}: props) {
 
     return (
         <>
         {state.map((component, i) => <CapsuleInnerItem
             key={`${component.id || i}`}
             state={component}
-            stateKey={[...stateKey, i]}
+            stateKey={stateKey}
+            index={i}
             stateManager={stateManager}
             showSectionButton={showSectionButton}
             removeKeyParent={removeKeyParent}
             passProps={passProps}
             buttonContext={buttonContext}
+            droppableId={droppableId}
         />)}
 
         <CapsuleButton context={buttonContext} className={buttonClassName} callback={value => stateManager.appendKey({key: stateKey, value})} />
@@ -48,24 +52,26 @@ export function CapsuleInner({state, stateKey, stateManager, showSectionButton =
 type itemProps = {
     state: Component,
     stateKey: stateKeyType,
+    index: number,
 } & commonProps;
 
-function CapsuleInnerItem({state, stateKey, stateManager, showSectionButton, removeKeyParent, passProps}: itemProps) {
+function CapsuleInnerItem({state, stateKey: stateKeyObj, index, stateManager, showSectionButton, removeKeyParent, passProps, droppableId}: itemProps) {
     const Component = COMPONENTS[state.type];
     if (typeof Component === "undefined") return null;
+    const stateKey = useMemo(() => [...stateKeyObj, index], [...stateKeyObj, index]);
 
     return <div className={CapsuleStyles.component}>
         <div className={CapsuleStyles.component_remove} onClick={() => {
-            if (state.type === 9 || state.type === 17) {
+            if (state.type === ComponentType.SECTION || state.type === ComponentType.CONTAINER) {
                 stateManager.deleteKey({key: stateKey, decoupleFrom: 'components', removeKeyParent});
                 return;
             }
 
             stateManager.deleteKey({key: stateKey, removeKeyParent});
         }}><img width={14} height={14} src={TimesSolid} alt={'x'}/></div>
-        <MaybeSection type={state.type} showSectionButton={showSectionButton} stateKey={stateKey} stateManager={stateManager}>
+        <DragLines droppableId={droppableId} data={state} stateKey={stateKey} removeKeyParent={removeKeyParent}><MaybeSection type={state.type} showSectionButton={showSectionButton} stateKey={stateKey} stateManager={stateManager}>
             <Component state={state} stateKey={stateKey} stateManager={stateManager} passProps={passProps}/>
-        </MaybeSection>
+        </MaybeSection></DragLines>
     </div>
 }
 

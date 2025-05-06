@@ -1,0 +1,87 @@
+.draglines {
+    position: relative;
+    user-select: none;
+    /*pointer-events: none;*/
+    /**/
+    /** {*/
+    /*    */
+    /*}*/
+}
+
+.dragline, .dragline_hor, .dragline_cen {
+    position: absolute;
+    border-radius: 100px;
+    background: #86c232;
+}
+
+.dragline {
+    left: 0;
+    right: 0;
+    height: 5px;
+}
+
+.dragline_hor {
+    top: 0;
+    bottom: 0;
+    width: 5px;
+}
+
+.dragline_cen {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 8px;
+    background: rgba(246, 86, 86, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+.moveMe {
+    position: absolute;
+    /*height: 40px;*/
+    /*width: 40px;*/
+    width: max-content;
+    bottom: 15px;
+    right: 0;
+    transform: translate(50%, 0);
+    background: red;
+    line-height: 100%;
+    border-radius: 3px;
+    font-size: 13px;
+    padding: 2px 4px;
+    animation: vibrate 0.5s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes vibrate {
+  0% { transform:   translate(50%, 0) rotate(0deg); }
+  10% { transform:  translate(50%, 0) rotate(-1deg); }
+  20% { transform:  translate(50%, 0) rotate(1deg); }
+  30% { transform:  translate(50%, 0) rotate(0deg); }
+  40% { transform:  translate(50%, 0) rotate(1deg); }
+  50% { transform:  translate(50%, 0) rotate(-1deg); }
+  60% { transform:  translate(50%, 0) rotate(0deg); }
+  70% { transform:  translate(50%, 0) rotate(-1deg); }
+  80% { transform:  translate(50%, 0) rotate(1deg); }
+  90% { transform:  translate(50%, 0) rotate(0deg); }
+  100% { transform: translate(50%, 0) rotate(-1deg); }
+}
+
+.draghandler {
+    position: absolute;
+    left: -12px;
+    top: 0;
+    width: 8px;
+    height: 13px;
+    cursor: grab;
+    svg {
+        fill: #686d7c;
+        width: 100%;
+    }
+}
