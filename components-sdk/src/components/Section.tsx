@@ -62,7 +62,6 @@ export function SectionFrame({children, stateKey, stateManager} : {
         <div>
             {children}
         </div>
-        {/*@ts-ignore*/}
         <div className={Styles.right} ref={el}>
             <CapsuleButton
                 context={'frame'}

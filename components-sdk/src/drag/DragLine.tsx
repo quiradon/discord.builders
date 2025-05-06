@@ -14,7 +14,7 @@ export function useDragLine({
 }: {
     stateKey: stateKeyType;
     droppableId: DroppableID | null;
-}): { ref: RefObject<HTMLDivElement | undefined> } & Pick<DragContextType, 'visible' | 'setVisible' | 'keyToDelete'> {
+}): { ref: RefObject<HTMLDivElement> } & Pick<DragContextType, 'visible' | 'setVisible' | 'keyToDelete'> {
     const { register, unregister, visible, setVisible, keyToDelete } = useDragContext();
     const el = useRef<HTMLDivElement>();
 
@@ -31,7 +31,7 @@ export function useDragLine({
         return () => unregister(droppableState);
     }, [register, unregister, droppableId, stateKey]);
 
-    return { ref: el, visible, setVisible, keyToDelete };
+    return { ref: el as RefObject<HTMLDivElement>, visible, setVisible, keyToDelete };
 }
 
 interface DragLinesProps {

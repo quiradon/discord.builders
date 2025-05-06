@@ -195,7 +195,6 @@ function StringSelectOption({state, stateKey: stateParent, index, stateManager, 
     index: number,
     stateManager: ComponentsProps['stateManager'],
     passProps: ComponentsProps['passProps'],
-    removeKeyParent: stateKeyType,
 }) {
     const {open, setOpen, ignoreRef, closeLockRef} = useStateOpen(0);
     const stateKey = useMemo(() => [...stateParent, 'options', index], [...stateParent, 'options', index]);
