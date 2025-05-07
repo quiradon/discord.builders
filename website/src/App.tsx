@@ -152,9 +152,15 @@ function App() {
             />
         </ErrorBoundary>
         <div className={Styles.json}>
-            <h1>Message builder</h1>
-            <p style={{marginBottom: '2rem', marginTop: '1rem'}}>Warning: Non-link buttons and select menus are not
-                allowed when sending message via webhook.</p>
+            <h1>discord.builders — Best webhook tool for Discord</h1>
+            <a href="https://github.com/StartITBot/discord.builders" target="_blank"><div className={Styles.badges}>
+                <img alt="Star on GitHub"
+                     src="https://img.shields.io/github/stars/StartITBot/discord.builders?style=for-the-badge&logo=github&label=Star+on+GitHub&color=007ec6" />
+                <img alt="GitHub contributors"
+                     src="https://img.shields.io/github/contributors/StartITBot/discord.builders?style=for-the-badge&color=248045" />
+                <img alt="GitHub commits"
+                     src="https://img.shields.io/github/commit-activity/t/StartITBot/discord.builders?style=for-the-badge&color=248045" />
+            </div></a>
 
             <div className={Styles.input_pair}>
                 <div className={Styles.input}>
@@ -173,6 +179,8 @@ function App() {
                     Send
                 </button>
             </div>
+
+            <p style={{marginTop: '1rem', marginBottom: '4rem'}}>Warning: Non-link buttons and select menus are not allowed when sending message via webhook.</p>
 
             {!!response && <div className={Styles.data}
                                 style={{
