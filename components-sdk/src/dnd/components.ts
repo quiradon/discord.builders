@@ -7,7 +7,7 @@ import {
 } from '../utils/componentTypes';
 import { SECTIONABLE } from '../Capsule';
 import { uuidv4 } from '../utils/randomGen';
-import { DistanceProps, DistanceReturn, KeyToDeleteType, setType } from './types';
+import { DistanceProps, DistanceReturn, KeyToDeleteType } from './types';
 import { distanceCenter, distanceHorizontal, distanceVertical } from './distance';
 import { stateKeyType, StateManager } from '../polyfills/StateManager';
 import {
