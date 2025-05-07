@@ -8,6 +8,7 @@ import { DroppableID } from './components';
 import Trash from '../icons/TrashWhite.svg';
 import { ComponentsProps } from '../Capsule';
 import DragHandler from '../icons/Draghandler.svg';
+import { guessComponentType } from './handleDropStart';
 
 export function useDragLine({
     stateKey,
@@ -59,6 +60,9 @@ export function DragLines(
         e.dataTransfer.effectAllowed = "copyMove";
         e.dataTransfer.setData("application/json", json);
         e.dataTransfer.setData("text/plain", json);
+        const compType = guessComponentType(data);
+        if (compType) e.dataTransfer.setData(`application/x-dsc-builders[${compType}]`, compType.toString());
+
         const sessionId = uuidv4();
         keyToDelete.current = typeof dragKeyToDeleteOverwrite !== "undefined" ? { sessionId, ...dragKeyToDeleteOverwrite } : { sessionId, stateKey, removeKeyParent };
         e.dataTransfer.setData("application/x-dsc-builders-id", sessionId);

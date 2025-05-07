@@ -1,8 +1,9 @@
 import { ClosestState, DistanceProps, DragContextType } from './types';
 import { MOVE_THRESHOLD } from './distance';
-import { TextDisplayComponent } from '../utils/componentTypes';
+import { ComponentType, ComponentTypeUnofficial, TextDisplayComponent } from '../utils/componentTypes';
 import { default_settings } from '../Capsule';
 import { getDroppableOrientation, isValidLocation } from './components';
+import { getContentType } from './handleDropStart';
 
 function assertValidJSON(arg: unknown): asserts arg is object {
     if (typeof arg !== 'object' || arg === null) throw new Error('Invalid component type');
@@ -43,8 +44,9 @@ export const handleDragOver = (
         setVisible: DragContextType['setVisible'];
     }
 ) => {
-    const comp = getJSON(e.dataTransfer);
-    if (!comp) return;
+    if (!e.dataTransfer) return null;
+
+    const comp = getContentType(e.dataTransfer);
     e.preventDefault();
 
     const mouseY: number = e.clientY;

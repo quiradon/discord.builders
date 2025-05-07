@@ -24,6 +24,11 @@ export enum ComponentType {
     CONTAINER = 17
 }
 
+export enum ComponentTypeUnofficial {
+    MEDIA_GALLERY_ITEM = -1,
+    STRING_SELECT_OPTION = -2,
+}
+
 export const parseComponent = {
     [ComponentType.ACTION_ROW]: parseActionRowComponent,
     [ComponentType.BUTTON]: parseButtonComponent,
@@ -35,6 +40,8 @@ export const parseComponent = {
     [ComponentType.FILE]: parseFileComponent,
     [ComponentType.SEPARATOR]: parseSeparatorComponent,
     [ComponentType.CONTAINER]: parseContainerComponent,
+    [ComponentTypeUnofficial.MEDIA_GALLERY_ITEM]: parseMediaGalleryItem,
+    [ComponentTypeUnofficial.STRING_SELECT_OPTION]: parseStringSelectComponentOption,
 }
 
 export type PassProps = {
@@ -332,7 +339,7 @@ export interface ThumbnailComponent extends Component {
     spoiler?: boolean
 }
 
-function parseThumbnailComponent(component: Component): ThumbnailComponent | null {
+function parseThumbnailComponent(component: unknown): ThumbnailComponent | null {
     const comp = parseMediaGalleryItem(component);
     if (comp === null) return null;
 

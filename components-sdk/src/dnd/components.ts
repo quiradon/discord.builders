@@ -1,18 +1,18 @@
 import {
     Component,
     ComponentType,
-    MediaGalleryItem,
+    ComponentTypeUnofficial,
     parseComponent,
-    parseMediaGalleryItem,
-    parseStringSelectComponentOption,
     StringSelectComponent,
-    StringSelectComponentOption,
 } from '../utils/componentTypes';
 import { SECTIONABLE } from '../Capsule';
 import { uuidv4 } from '../utils/randomGen';
-import { DistanceProps, DistanceReturn, DragContextType, KeyToDeleteType } from './types';
+import { DistanceProps, DistanceReturn, KeyToDeleteType, setType } from './types';
 import { distanceCenter, distanceHorizontal, distanceVertical } from './distance';
 import { stateKeyType, StateManager } from '../polyfills/StateManager';
+import {
+    guessComponentType
+} from './handleDropStart';
 
 /*
     * This file gathers all configuration how components can be dragged and dropped
@@ -60,57 +60,34 @@ export const DRAG_SUPPORT = [  // All components should be here
     ComponentType.MEDIA_GALLERY,
     ComponentType.FILE,
     ComponentType.SEPARATOR,
-    ComponentType.CONTAINER,
+    ComponentType.CONTAINER
 ];
-
-const fastIsComponent = (arg: object): arg is Component =>
-    'type' in arg &&
-    typeof arg.type === 'number';
-
-const fastIsSelectMenuOption = (arg: object): arg is StringSelectComponentOption =>
-    'label' in arg &&
-    typeof arg.label === 'string' &&
-    'value' in arg &&
-    typeof arg.value === 'string';
-
-const fastIsMediaGalleryItem = (arg: object): arg is MediaGalleryItem =>
-    'media' in arg &&
-    typeof arg.media === 'object' &&
-    arg.media !== null &&
-    !Array.isArray(arg.media) &&
-    'url' in arg.media &&
-    typeof arg.media.url === 'string';
 
 function unknownComponent(p: never): never;
 function unknownComponent(p: DroppableID) {
     throw new Error('Unknown component: ' + p.toString());
 }
 
-export function isValidLocation(comp: object) {
-    const isComp = fastIsComponent(comp) && DRAG_SUPPORT.includes(comp.type);
-    const isSelect = !isComp && fastIsSelectMenuOption(comp);
-    const isMediaGalleryItem = !isComp && !isSelect && fastIsMediaGalleryItem(comp);
+export function isValidLocation(compType: ComponentType | ComponentTypeUnofficial | null) {
+    // compType === null is only on dragOver event (when we don't know the type of the component)
 
     return (droppableId: DroppableID) => {
         switch (droppableId) {
             case DroppableID.TOP_LEVEL:
-                return isComp || isSelect || isMediaGalleryItem;
+                return true;
             case DroppableID.BUTTON:
-                return isComp && comp.type == ComponentType.BUTTON;
+                return compType == ComponentType.BUTTON;
             case DroppableID.SECTION_ADD_ACCESSORY:
             case DroppableID.SECTION_EDIT_ACCESSORY:
-                return (
-                    (isComp && [ComponentType.BUTTON, ComponentType.THUMBNAIL].includes(comp.type)) ||
-                    isMediaGalleryItem
-                );
+                return [ComponentType.BUTTON, ComponentType.THUMBNAIL, ComponentTypeUnofficial.MEDIA_GALLERY_ITEM].includes(compType as any)
             case DroppableID.STRING_SELECT:
-                return isSelect;
+                return compType == ComponentTypeUnofficial.STRING_SELECT_OPTION
             case DroppableID.CONTAINER:
-                return (isComp && comp.type !== ComponentType.CONTAINER) || isSelect || isMediaGalleryItem;
+                return compType === null || compType !== ComponentType.CONTAINER;
             case DroppableID.SECTION_CONTENT:
-                return isComp && SECTIONABLE.includes(comp.type);
+                return SECTIONABLE.includes(compType as any)
             case DroppableID.GALLERY_ITEM:
-                return (isComp && comp.type === ComponentType.THUMBNAIL) || isMediaGalleryItem;
+                return [ComponentType.THUMBNAIL, ComponentTypeUnofficial.MEDIA_GALLERY_ITEM].includes(compType as any)
             default:
                 unknownComponent(droppableId);
         }
@@ -134,66 +111,43 @@ function randomizeIds(data: any): any {
 export function getValidObj(comp: object, droppableId: DroppableID, randomizeId: boolean) {
     let compValid;
 
+    const compType = guessComponentType(comp);
+    if (!compType) return null;
+
     // Don't assume that component matches the droppableId as it's not always the case
-    if (!isValidLocation(comp)(droppableId)) return null;
-    if (randomizeId) comp = randomizeIds(comp)
+    if (!isValidLocation(compType)(droppableId)) return null;
 
-    if (fastIsComponent(comp) && DRAG_SUPPORT.includes(comp.type)) {
-        if (comp.type === ComponentType.BUTTON && ![DroppableID.BUTTON, DroppableID.SECTION_ADD_ACCESSORY, DroppableID.SECTION_EDIT_ACCESSORY].includes(droppableId)) {
-            compValid = parseComponent[ComponentType.ACTION_ROW]({
-                components: [comp],
-                type: ComponentType.ACTION_ROW,
-            } as Component);
-        } else if (comp.type === ComponentType.THUMBNAIL) {
-            if ([DroppableID.SECTION_ADD_ACCESSORY, DroppableID.SECTION_EDIT_ACCESSORY].includes(droppableId)) {
-                compValid = parseComponent[ComponentType.THUMBNAIL](comp);
-            } else if (droppableId === DroppableID.GALLERY_ITEM) {
-                compValid = parseMediaGalleryItem(comp);
-            } else {
-                compValid = parseComponent[ComponentType.MEDIA_GALLERY]({
-                    items: [comp],
-                    type: ComponentType.MEDIA_GALLERY,
-                } as Component);
-            }
-        } else {
-            compValid = parseComponent[comp.type](comp) as Component | null;
-        }
-        if (!compValid) return null;
+    if (randomizeId) comp = randomizeIds(comp);
 
-    } else if (fastIsMediaGalleryItem(comp)) {
-        if (droppableId === DroppableID.GALLERY_ITEM) {
-            compValid = parseMediaGalleryItem(comp);
-        } else if ([DroppableID.SECTION_ADD_ACCESSORY, DroppableID.SECTION_EDIT_ACCESSORY].includes(droppableId)) {
-            compValid = parseComponent[ComponentType.THUMBNAIL]({
-                ...comp,
-                type: ComponentType.THUMBNAIL,
-            });
+    if (compType === ComponentType.BUTTON && ![DroppableID.BUTTON, DroppableID.SECTION_ADD_ACCESSORY, DroppableID.SECTION_EDIT_ACCESSORY].includes(droppableId)) {
+        compValid = parseComponent[ComponentType.ACTION_ROW]({
+            components: [comp],
+            type: ComponentType.ACTION_ROW,
+        } as Component);
+    } else if (compType === ComponentTypeUnofficial.STRING_SELECT_OPTION && droppableId !== DroppableID.STRING_SELECT) {
+        compValid = parseComponent[ComponentType.STRING_SELECT]({
+            type: ComponentType.STRING_SELECT,
+            custom_id: uuidv4(),
+            options: [
+                comp
+            ]
+        } as StringSelectComponent);
+    } else if ([ComponentType.THUMBNAIL, ComponentTypeUnofficial.MEDIA_GALLERY_ITEM].includes(compType)) {
+        if ([DroppableID.SECTION_ADD_ACCESSORY, DroppableID.SECTION_EDIT_ACCESSORY].includes(droppableId)) {
+            compValid = parseComponent[ComponentType.THUMBNAIL](comp);
+        } else if (droppableId === DroppableID.GALLERY_ITEM) {
+            compValid = parseComponent[ComponentTypeUnofficial.MEDIA_GALLERY_ITEM](comp);
         } else {
             compValid = parseComponent[ComponentType.MEDIA_GALLERY]({
                 items: [comp],
                 type: ComponentType.MEDIA_GALLERY,
             } as Component);
         }
-
-        if (!compValid) return null;
-
-    } else if (fastIsSelectMenuOption(comp)) {
-        if (droppableId === DroppableID.STRING_SELECT) {
-            compValid = parseStringSelectComponentOption(comp);
-        } else {
-            compValid = parseComponent[ComponentType.STRING_SELECT]({
-                type: ComponentType.STRING_SELECT,
-                custom_id: uuidv4(),
-                options: [
-                    comp
-                ]
-            } as StringSelectComponent);
-        }
-
-        if (!compValid) return null;
     } else {
-        return null;
+        // @ts-ignore We trust that guessComponentType() will ensure that comp is a valid component
+        compValid = parseComponent[compType](comp);
     }
+    if (!compValid) return null;
 
     return compValid;
 }
