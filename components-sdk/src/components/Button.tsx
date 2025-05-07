@@ -27,9 +27,9 @@ import LockActive from '../icons/LockActive.svg';
 import Lock from '../icons/Lock.svg';
 import Url from '../icons/Url.svg';
 import DescriptionPen from '../icons/DescriptionPen.svg';
-import { DragLines } from '../drag/DragLine';
-import { ClosestType } from '../drag/types';
-import { DroppableID } from '../drag/components';
+import { DragLines } from '../dnd/DragLine';
+import { ClosestType } from '../dnd/types';
+import { DroppableID } from '../dnd/components';
 
 /*
 

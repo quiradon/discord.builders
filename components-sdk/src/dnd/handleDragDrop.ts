@@ -34,7 +34,7 @@ export const handleDragDrop = (
     const comp = getJSON(e.dataTransfer);
     if (!comp) return;
 
-    const value = getValidObj(comp, visible.ref.droppableId);
+    const value = getValidObj(comp, visible.ref.droppableId, e.dataTransfer.dropEffect === 'copy');
     if (value === null) return;
 
     e.preventDefault();

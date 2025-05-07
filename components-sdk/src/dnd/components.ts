@@ -117,11 +117,26 @@ export function isValidLocation(comp: object) {
     };
 }
 
-export function getValidObj(comp: object, droppableId: DroppableID) {
+function randomizeIds(data: any): any {
+    if (Array.isArray(data)) {
+        return data.map(randomizeIds);
+    } else if (data && typeof data === 'object') {
+        return Object.fromEntries(
+            Object.entries(data).map(([key, value]) => [
+                key,
+                key === 'custom_id' ? uuidv4() : randomizeIds(value),
+            ])
+        );
+    }
+    return data;
+}
+
+export function getValidObj(comp: object, droppableId: DroppableID, randomizeId: boolean) {
     let compValid;
 
     // Don't assume that component matches the droppableId as it's not always the case
     if (!isValidLocation(comp)(droppableId)) return null;
+    if (randomizeId) comp = randomizeIds(comp)
 
     if (fastIsComponent(comp) && DRAG_SUPPORT.includes(comp.type)) {
         if (comp.type === ComponentType.BUTTON && ![DroppableID.BUTTON, DroppableID.SECTION_ADD_ACCESSORY, DroppableID.SECTION_EDIT_ACCESSORY].includes(droppableId)) {

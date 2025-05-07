@@ -14,8 +14,8 @@ import { useFileUpload } from '../utils/useFileUpload';
 import SpoilerActiveIcon from '../icons/SpoilerActive.svg';
 import SpoilerIcon from '../icons/Spoiler.svg';
 import { useStateOpen } from '../utils/useStateOpen';
-import { ClosestType } from '../drag/types';
-import { DragLines } from '../drag/DragLine';
+import { ClosestType } from '../dnd/types';
+import { DragLines } from '../dnd/DragLine';
 
 export function Thumbnail({
     state,

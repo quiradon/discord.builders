@@ -2,7 +2,7 @@ import Styles from './MediaGallery.module.css';
 import { Thumbnail } from './Thumbnail';
 import { ComponentsProps } from '../Capsule';
 import { MediaGalleryComponent, MediaGalleryItem } from '../utils/componentTypes';
-import { DroppableID } from '../drag/components';
+import { DroppableID } from '../dnd/components';
 import { useMemo } from 'react';
 
 function getClass(len: number) {

@@ -5,9 +5,9 @@ import { CapsuleButton } from '../CapsuleButton';
 import { CapsuleInner } from '../CapsuleInner';
 import { SectionComponent } from '../utils/componentTypes';
 import { ReactNode, useMemo } from 'react';
-import { useDragLine } from '../drag/DragLine';
-import { dragline_hor } from '../drag/DragLine.module.css';
-import { DroppableID } from '../drag/components';
+import { useDragLine } from '../dnd/DragLine';
+import { dragline_hor } from '../dnd/DragLine.module.css';
+import { DroppableID } from '../dnd/components';
 
 export function Section({ state, stateKey, stateManager, passProps }: ComponentsProps & { state: SectionComponent }) {
     const Accessory = COMPONENTS[state.accessory.type];
@@ -26,7 +26,7 @@ export function Section({ state, stateKey, stateManager, passProps }: Components
 
     return (
         <div className={Styles.section}>
-            <div className={Styles.left}>
+            <div>
                 <CapsuleInner
                     droppableId={DroppableID.SECTION_CONTENT}
                     state={state?.components || []}

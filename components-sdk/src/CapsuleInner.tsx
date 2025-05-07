@@ -6,8 +6,8 @@ import { ReactElement, useMemo } from 'react';
 import { stateKeyType, StateManager } from './polyfills/StateManager';
 import { Component, ComponentType, PassProps } from './utils/componentTypes';
 import TimesSolid from './icons/times-solid.svg';
-import { DragLines } from './drag/DragLine';
-import { DroppableID } from './drag/components';
+import { DragLines } from './dnd/DragLine';
+import { DroppableID } from './dnd/components';
 
 type commonProps = {
     showSectionButton?: boolean;

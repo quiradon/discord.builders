@@ -21,9 +21,9 @@ import { useStateOpen } from '../utils/useStateOpen';
 import DescriptionPen from '../icons/DescriptionPen.svg';
 import DescriptionText from '../icons/DescriptionText.svg';
 import DescriptionTextActive from '../icons/DescriptionTextActive.svg';
-import { DragLines, useDragLine } from '../drag/DragLine';
-import { DroppableID } from '../drag/components';
-import { dragline } from '../drag/DragLine.module.css';
+import { DragLines, useDragLine } from '../dnd/DragLine';
+import { DroppableID } from '../dnd/components';
+import { dragline } from '../dnd/DragLine.module.css';
 
 export function StringSelect({
     state,

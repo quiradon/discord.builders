@@ -7,10 +7,10 @@ import ColorActiveIcon from '../icons/ColorActive.svg';
 import SpoilerActiveIcon from '../icons/SpoilerActive.svg';
 import { ComponentsProps } from '../Capsule';
 import { ContainerComponent } from '../utils/componentTypes';
-import { dragline } from '../drag/DragLine.module.css';
+import { dragline } from '../dnd/DragLine.module.css';
 import { useStateOpen } from '../utils/useStateOpen';
-import { useDragLine } from '../drag/DragLine';
-import { DroppableID } from '../drag/components';
+import { useDragLine } from '../dnd/DragLine';
+import { DroppableID } from '../dnd/components';
 import { useMemo } from 'react';
 
 export function Container({

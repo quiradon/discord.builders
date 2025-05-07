@@ -30,9 +30,9 @@ import {
     ThumbnailComponent,
 } from './utils/componentTypes';
 
-import { DragContextProvider } from './drag/DragContext';
-import { DroppableID } from './drag/components';
-import { KeyToDeleteType } from './drag/types';
+import { DragContextProvider } from './dnd/DragContext';
+import { DroppableID } from './dnd/components';
+import { KeyToDeleteType } from './dnd/types';
 
 const _Button = {
     type: 2,
