@@ -47,19 +47,6 @@ export function getDroppableOrientation(droppableId: DroppableID): (props: Dista
     }
 }
 
-export const DRAG_SUPPORT = [  // All components should be here
-    ComponentType.ACTION_ROW,
-    ComponentType.BUTTON,
-    ComponentType.STRING_SELECT,
-    ComponentType.SECTION,
-    ComponentType.TEXT_DISPLAY,
-    ComponentType.THUMBNAIL,
-    ComponentType.MEDIA_GALLERY,
-    ComponentType.FILE,
-    ComponentType.SEPARATOR,
-    ComponentType.CONTAINER
-];
-
 function unknownComponent(p: never): never;
 function unknownComponent(p: DroppableID) {
     throw new Error('Unknown component: ' + p.toString());
