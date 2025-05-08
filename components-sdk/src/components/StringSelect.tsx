@@ -43,58 +43,35 @@ export function StringSelect({
     //     }
     // }, [state.max_values]);
 
-    const stateKeyOptions = useMemo(() => [...stateKey, 'options'], [...stateKey]);
-    const { ref: el, visible } = useDragLine({
-        stateKey: stateKeyOptions,
-        droppableId: state.options.length === 0 ? DroppableID.STRING_SELECT : null,
-    });
+    return <div>
+        <div className={Styles.select}>
+            <GlobalSettings state={state} stateKey={stateKey} stateManager={stateManager} />
 
-    return (
-        <div>
-            <div className={Styles.select}>
-                <GlobalSettings state={state} stateKey={stateKey} stateManager={stateManager} />
+            {state.disabled && <div className={Styles.disabled}>
+                ⚠️ This component will be greyed out and disabled for all users.
+            </div>}
 
-                {state.disabled && (
-                    <div className={Styles.disabled}>
-                        ⚠️ This component will be greyed out and disabled for all users.
+            {state.options.map((option, index) => <StringSelectOption
+                key={option.value}
+                state={option}
+                stateKey={stateKey}
+                index={index}
+                stateManager={stateManager}
+                passProps={passProps}
+            />)}
+
+            <div>
+                <div className={Styles.select_option + ' ' + Styles.select_new} onClick={() => {
+                    stateManager.appendKey({key: [...stateKey, "options"], value: default_settings.StringSelect().components[0].options[0]});
+                }}>
+                    <div className={Styles.icon}>
+                        <img src={Icons} alt=""/>
                     </div>
-                )}
-
-                {state.options.map((option, index) => (
-                    <StringSelectOption
-                        key={option.value}
-                        state={option}
-                        stateKey={stateKey}
-                        index={index}
-                        stateManager={stateManager}
-                        passProps={passProps}
-                    />
-                ))}
-
-                <div>
-                    <div ref={el} style={{ position: 'relative' }}>
-                        {!!el.current && visible?.ref.element === el.current && (
-                            <div key={'top-dragline'} className={dragline} style={{ top: -6 }} />
-                        )}
-                    </div>
-                    <div
-                        className={Styles.select_option + ' ' + Styles.select_new}
-                        onClick={() => {
-                            stateManager.appendKey({
-                                key: [...stateKey, 'options'],
-                                value: default_settings.StringSelect().components[0].options[0],
-                            });
-                        }}
-                    >
-                        <div className={Styles.icon}>
-                            <img src={Icons} alt="" />
-                        </div>
-                        <div className={Styles.text}>New option</div>
-                    </div>
+                    <div className={Styles.text}>New option</div>
                 </div>
             </div>
         </div>
-    );
+    </div>
 }
 
 function GlobalSettings({state, stateKey, stateManager} : {
