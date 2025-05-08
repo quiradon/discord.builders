@@ -7,9 +7,7 @@ import ColorActiveIcon from '../icons/ColorActive.svg';
 import SpoilerActiveIcon from '../icons/SpoilerActive.svg';
 import { ComponentsProps } from '../Capsule';
 import { ContainerComponent } from '../utils/componentTypes';
-import { dragline } from '../dnd/DragLine.module.css';
 import { useStateOpen } from '../utils/useStateOpen';
-import { useDragLine } from '../dnd/DragLine';
 import { DroppableID } from '../dnd/components';
 import { useMemo } from 'react';
 
@@ -29,17 +27,10 @@ export function Container({
             .padStart(6, '0');
     const { open: pickerOpen, setOpen: setPickerOpen, ignoreRef: picker } = useStateOpen(false);
     const stateKeyComponents = useMemo(() => [...stateKey, 'components'], [...stateKey]);
-    const { ref: el, visible } = useDragLine({ stateKey: stateKeyComponents, droppableId: DroppableID.CONTAINER });
 
     return (
         <div className={Styles.embed + ' ' + (state.spoiler ? Styles.spoiler : '')}>
             {hasColor && <div className={Styles.bar} style={{ backgroundColor: colorHex }} />}
-
-            <div ref={el} style={{ position: 'relative' }}>
-                {!!el.current && visible?.ref.element === el.current && (
-                    <div key={'top-dragline'} className={dragline} style={{ top: -6 }} />
-                )}
-            </div>
 
             <CapsuleInner
                 state={state?.components || []}

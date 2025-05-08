@@ -6,8 +6,9 @@ import { ReactElement, useMemo } from 'react';
 import { stateKeyType, StateManager } from './polyfills/StateManager';
 import { Component, ComponentType, PassProps } from './utils/componentTypes';
 import TimesSolid from './icons/times-solid.svg';
-import { DragLines } from './dnd/DragLine';
+import { DragLines, useDragLine } from './dnd/DragLine';
 import { DroppableID } from './dnd/components';
+import { dragline } from './dnd/DragLine.module.css';
 
 type commonProps = {
     showSectionButton?: boolean;
@@ -26,8 +27,19 @@ type props = {
 
 export function CapsuleInner({state, stateKey, stateManager, showSectionButton = true, removeKeyParent, passProps, buttonContext, buttonClassName, droppableId}: props) {
 
+    const { ref: el, visible } = useDragLine({
+        stateKey: stateKey,
+        droppableId: state.length === 0 ? droppableId : null,
+    });
+
     return (
         <>
+
+        <div ref={el} style={{ position: 'relative' }}>
+            {!!el.current && visible?.ref.element === el.current && (
+                <div key={'top-dragline'} className={dragline} style={{ top: -6 }} />
+            )}
+        </div>
         {state.map((component, i) => <CapsuleInnerItem
             key={`${component.id || i}`}
             state={component}
