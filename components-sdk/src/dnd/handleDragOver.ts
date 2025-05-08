@@ -1,34 +1,20 @@
 import { ClosestState, DistanceProps, DragContextType } from './types';
 import { MOVE_THRESHOLD } from './distance';
-import { ComponentType, ComponentTypeUnofficial, TextDisplayComponent } from '../utils/componentTypes';
-import { default_settings } from '../Capsule';
 import { getDroppableOrientation, isValidLocation } from './components';
-import { getContentType } from './handleDropStart';
-
-function assertValidJSON(arg: unknown): asserts arg is object {
-    if (typeof arg !== 'object' || arg === null) throw new Error('Invalid component type');
-    if (Array.isArray(arg)) throw new Error('Invalid component type');
-}
+import { ComponentType, ComponentTypeUnofficial } from '../utils/componentTypes';
 
 
-export function getJSON(dataTransfer: DataTransfer | null): object | null {
+const mimetypeRegex = /^application\/x-dsc-builders\[(.*)\]$/;
+
+function getContentType(dataTransfer: DataTransfer | null): ComponentType | ComponentTypeUnofficial | null {
     if (!dataTransfer) return null;
 
-    const data = dataTransfer.getData('application/json') || dataTransfer.getData('text/plain');
-    // if (!data) return null;
+    const mimetype = dataTransfer.types.find(str => mimetypeRegex.test(str));
+    const matches = mimetype ? mimetype.match(mimetypeRegex) : null;
+    const number = matches ? Number(matches[1]) : NaN;
+    if (!(number in ComponentType) && !(number in ComponentTypeUnofficial)) return null;
 
-    let jsonData;
-    try {
-        jsonData = JSON.parse(data);
-        assertValidJSON(jsonData);
-    } catch (e) {
-        jsonData = {
-            ...default_settings.TextDisplay(),
-            content: data
-        } as TextDisplayComponent;
-    }
-
-    return jsonData;
+    return number;
 }
 
 export const handleDragOver = (
@@ -37,7 +23,7 @@ export const handleDragOver = (
     {
         refs,
         visible,
-        setVisible
+        setVisible,
     }: {
         refs: DragContextType['refs'];
         visible: DragContextType['visible'];
@@ -67,14 +53,10 @@ export const handleDragOver = (
             visible,
             activeDistance,
             mouseY,
-            mouseX
+            mouseX,
         } as DistanceProps;
         const distanceFunc = getDroppableOrientation(ref.droppableId);
-        ({
-            closest,
-            closestDistance,
-            activeDistance
-        } = distanceFunc(distanceProps));
+        ({ closest, closestDistance, activeDistance } = distanceFunc(distanceProps));
     });
 
     const hasChanged = closest?.ref?.element !== visible?.ref?.element || closest?.type !== visible?.type;

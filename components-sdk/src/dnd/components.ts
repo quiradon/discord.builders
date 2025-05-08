@@ -10,9 +10,6 @@ import { uuidv4 } from '../utils/randomGen';
 import { DistanceProps, DistanceReturn, KeyToDeleteType } from './types';
 import { distanceCenter, distanceHorizontal, distanceVertical } from './distance';
 import { stateKeyType, StateManager } from '../polyfills/StateManager';
-import {
-    guessComponentType
-} from './handleDropStart';
 
 /*
     * This file gathers all configuration how components can be dragged and dropped
@@ -108,6 +105,26 @@ function randomizeIds(data: any): any {
     return data;
 }
 
+export function guessComponentType(arg: object): ComponentType | ComponentTypeUnofficial | null {
+    if ('type' in arg && typeof arg.type === 'number' && arg.type in ComponentType) {
+        return arg.type;
+    }
+    if ('label' in arg && typeof arg.label === 'string' && 'value' in arg && typeof arg.value === 'string') {
+        return ComponentTypeUnofficial.STRING_SELECT_OPTION;
+    }
+    if (
+        'media' in arg &&
+        typeof arg.media === 'object' &&
+        arg.media !== null &&
+        !Array.isArray(arg.media) &&
+        'url' in arg.media &&
+        typeof arg.media.url === 'string'
+    ) {
+        return ComponentTypeUnofficial.MEDIA_GALLERY_ITEM;
+    }
+    return null;
+}
+
 export function getValidObj(comp: object, droppableId: DroppableID, randomizeId: boolean) {
     let compValid;
 
@@ -119,7 +136,12 @@ export function getValidObj(comp: object, droppableId: DroppableID, randomizeId:
 
     if (randomizeId) comp = randomizeIds(comp);
 
-    if (compType === ComponentType.BUTTON && ![DroppableID.BUTTON, DroppableID.SECTION_ADD_ACCESSORY, DroppableID.SECTION_EDIT_ACCESSORY].includes(droppableId)) {
+    if (
+        compType === ComponentType.BUTTON &&
+        ![DroppableID.BUTTON, DroppableID.SECTION_ADD_ACCESSORY, DroppableID.SECTION_EDIT_ACCESSORY].includes(
+            droppableId
+        )
+    ) {
         compValid = parseComponent[ComponentType.ACTION_ROW]({
             components: [comp],
             type: ComponentType.ACTION_ROW,

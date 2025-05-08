@@ -4,11 +4,10 @@ import { stateKeyType } from '../polyfills/StateManager';
 import { uuidv4 } from '../utils/randomGen';
 import { ClosestType, DragContextType, DroppableState } from './types';
 import { useDragContext } from './DragContext';
-import { DroppableID } from './components';
+import { DroppableID, guessComponentType } from './components';
 import Trash from '../icons/TrashWhite.svg';
 import { ComponentsProps } from '../Capsule';
 import DragHandler from '../icons/Draghandler.svg';
-import { guessComponentType } from './handleDropStart';
 
 export function useDragLine({
     stateKey,

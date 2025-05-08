@@ -1,7 +1,33 @@
 import { ClosestType, DragContextType } from './types';
 import { StateManager } from '../polyfills/StateManager';
-import { getJSON } from './handleDragOver';
-import { customDropActions, DroppableID, getValidObj } from './components';
+import { customDropActions, getValidObj } from './components';
+import { default_settings } from '../Capsule';
+import { TextDisplayComponent } from '../utils/componentTypes';
+
+function assertValidJSON(arg: unknown): asserts arg is object {
+    if (typeof arg !== 'object' || arg === null) throw new Error('Invalid component type');
+    if (Array.isArray(arg)) throw new Error('Invalid component type');
+}
+
+function getJSON(dataTransfer: DataTransfer | null): object | null {
+    if (!dataTransfer) return null;
+
+    const data = dataTransfer.getData('application/json') || dataTransfer.getData('text/plain');
+    // if (!data) return null;
+
+    let jsonData;
+    try {
+        jsonData = JSON.parse(data);
+        assertValidJSON(jsonData);
+    } catch (e) {
+        jsonData = {
+            ...default_settings.TextDisplay(),
+            content: data,
+        } as TextDisplayComponent;
+    }
+
+    return jsonData;
+}
 
 export const handleDragDrop = (
     e: DragEvent,
@@ -40,13 +66,16 @@ export const handleDragDrop = (
     e.preventDefault();
     setVisible(null);
 
-    if (customDropActions({
-        stateManager,
-        keyToDelete,
-        droppableId: visible.ref.droppableId,
-        key: visible.ref.stateKey,
-        value,
-    })) return;
+    if (
+        customDropActions({
+            stateManager,
+            keyToDelete,
+            droppableId: visible.ref.droppableId,
+            key: visible.ref.stateKey,
+            value,
+        })
+    )
+        return;
 
     let key = visible.ref.stateKey;
     let index = 0;
