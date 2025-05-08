@@ -1,11 +1,6 @@
 .draglines {
     position: relative;
     user-select: none;
-    /*pointer-events: none;*/
-    /**/
-    /** {*/
-    /*    */
-    /*}*/
 }
 
 .dragline, .dragline_hor, .dragline_cen {
