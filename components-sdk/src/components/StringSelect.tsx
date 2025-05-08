@@ -21,15 +21,15 @@ import { useStateOpen } from '../utils/useStateOpen';
 import DescriptionPen from '../icons/DescriptionPen.svg';
 import DescriptionText from '../icons/DescriptionText.svg';
 import DescriptionTextActive from '../icons/DescriptionTextActive.svg';
-import { DragLines, useDragLine } from '../dnd/DragLine';
+import { DragLines } from '../dnd/DragLine';
 import { DroppableID } from '../dnd/components';
-import { dragline } from '../dnd/DragLine.module.css';
 
 export function StringSelect({
     state,
     stateKey,
     stateManager,
     passProps,
+    removeKeyParent = undefined,
 }: ComponentsProps & { state: StringSelectComponent }) {
     // useEffect(() => {
     //     if (state.min_values > state.max_values) {
@@ -58,6 +58,7 @@ export function StringSelect({
                 index={index}
                 stateManager={stateManager}
                 passProps={passProps}
+                removeKeyParent={removeKeyParent}
             />)}
 
             <div>
@@ -166,12 +167,13 @@ function GlobalSettingsFirst({state, stateKey, stateManager, setOpen} : {
     </>
 }
 
-function StringSelectOption({state, stateKey: stateParent, index, stateManager, passProps} : {
+function StringSelectOption({state, stateKey: stateParent, index, stateManager, passProps, removeKeyParent} : {
     state: StringSelectComponentOption,
     stateKey: ComponentsProps['stateKey'],
     index: number,
     stateManager: ComponentsProps['stateManager'],
     passProps: ComponentsProps['passProps'],
+    removeKeyParent: ComponentsProps['removeKeyParent']
 }) {
     const {open, setOpen, ignoreRef, closeLockRef} = useStateOpen(0);
     const stateKey = useMemo(() => [...stateParent, 'options', index], [...stateParent, 'options', index]);
@@ -179,7 +181,7 @@ function StringSelectOption({state, stateKey: stateParent, index, stateManager, 
     const Comp = passProps.EmojiShow;
 
     return (
-        <DragLines draggable={true} removeKeyParent={stateParent} droppableId={DroppableID.STRING_SELECT} data={state} stateKey={stateKey}><div className={Styles.select_option + (open ? " " + Styles.open : "") + (state.default ? " " + Styles.blue : "") + (state.disabled ? " " + Styles.disabled : "")} onClick={(ev) => {
+        <DragLines draggable={true} removeKeyParent={removeKeyParent} droppableId={DroppableID.STRING_SELECT} data={state} stateKey={stateKey}><div className={Styles.select_option + (open ? " " + Styles.open : "") + (state.default ? " " + Styles.blue : "") + (state.disabled ? " " + Styles.disabled : "")} onClick={(ev) => {
             if (btn_select.current && btn_select.current.contains(ev.target as HTMLElement)) return;
             setOpen(1)
         }} ref={ignoreRef}>
@@ -190,7 +192,7 @@ function StringSelectOption({state, stateKey: stateParent, index, stateManager, 
                 {state.label} {!!state.description && <span className={Styles.desc}>&bull; {state.description}</span>}
             </div>
             { !!open && <div className={CapsuleStyles.large_button_ctx+ ' ' + CapsuleStyles.noright} ref={btn_select}>
-                {open === 1 && <MenuFirst state={state} stateKey={stateKey} stateManager={stateManager} setOpen={setOpen} removeKeyParent={stateParent}/>}
+                {open === 1 && <MenuFirst state={state} stateKey={stateKey} stateManager={stateManager} setOpen={setOpen} removeKeyParent={removeKeyParent}/>}
                 {open === 2 && <MenuEmoji stateKey={[...stateKey, 'emoji']} stateManager={stateManager} passProps={passProps}/>}
                 {open === 3 && <MenuLabel closeLockRef={closeLockRef} state={state.label} stateKey={[...stateKey, 'label']} stateManager={stateManager} setOpen={setOpen}/>}
                 {open === 4 && <MenuLabel closeLockRef={closeLockRef} state={state.description || ""} nullable={true} stateKey={[...stateKey, "description"]} stateManager={stateManager} setOpen={setOpen}/>}

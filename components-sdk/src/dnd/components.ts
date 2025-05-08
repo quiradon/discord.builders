@@ -133,14 +133,22 @@ export function getValidObj(comp: object, droppableId: DroppableID, randomizeId:
             components: [comp],
             type: ComponentType.ACTION_ROW,
         } as Component);
+    } else if (compType === ComponentType.STRING_SELECT) { // Not possible via UI
+        compValid = parseComponent[ComponentType.ACTION_ROW]({
+            components: [comp],
+            type: ComponentType.ACTION_ROW,
+        } as Component);
     } else if (compType === ComponentTypeUnofficial.STRING_SELECT_OPTION && droppableId !== DroppableID.STRING_SELECT) {
-        compValid = parseComponent[ComponentType.STRING_SELECT]({
-            type: ComponentType.STRING_SELECT,
-            custom_id: uuidv4(),
-            options: [
-                comp
-            ]
-        } as StringSelectComponent);
+        compValid = parseComponent[ComponentType.ACTION_ROW]({
+            components: [{
+                type: ComponentType.STRING_SELECT,
+                custom_id: uuidv4(),
+                options: [
+                    comp
+                ]
+            } as StringSelectComponent],
+            type: ComponentType.ACTION_ROW,
+        } as Component);
     } else if ([ComponentType.THUMBNAIL, ComponentTypeUnofficial.MEDIA_GALLERY_ITEM].includes(compType)) {
         if ([DroppableID.SECTION_ADD_ACCESSORY, DroppableID.SECTION_EDIT_ACCESSORY].includes(droppableId)) {
             compValid = parseComponent[ComponentType.THUMBNAIL](comp);
