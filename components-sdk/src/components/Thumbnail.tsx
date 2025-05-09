@@ -40,7 +40,7 @@ export function Thumbnail({
 
     return (
         <div
-            className={(className || Styles.thumbnail) + ' ' + (state.spoiler ? Styles.spoiler : '')}
+            className={(className || Styles.thumbnail)}
             onClick={(ev) => {
                 if (btn_select.current && btn_select.current.contains(ev.target as HTMLElement)) return;
                 setOpen(1);
@@ -56,6 +56,7 @@ export function Thumbnail({
                 stateKey={stateKey}
                 removeKeyParent={removeKeyParent}
                 dragKeyToDeleteOverwrite={dragKeyToDeleteOverwrite}
+                className={state.spoiler ? Styles.spoiler : ''}
             >
                 <img src={src || ThumbnailIcon} data-image-role="main" alt="" />
             </DragLines>

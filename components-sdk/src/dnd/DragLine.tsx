@@ -44,12 +44,13 @@ interface DragLinesProps {
     dragDisabled?: boolean,
     droppableId: DroppableID | null   // Set to null to disable dropping
     removeKeyParent?: stateKeyType,
-    dragKeyToDeleteOverwrite?: ComponentsProps['dragKeyToDeleteOverwrite']
+    dragKeyToDeleteOverwrite?: ComponentsProps['dragKeyToDeleteOverwrite'],
+    className?: string,
 }
 
 
 export function DragLines(
-    { children, data, stateKey, defaultType = ClosestType.UP, draggable = false, dragDisabled = false, droppableId, removeKeyParent, dragKeyToDeleteOverwrite } : DragLinesProps
+    { children, data, stateKey, defaultType = ClosestType.UP, draggable = false, dragDisabled = false, droppableId, removeKeyParent, dragKeyToDeleteOverwrite, className = undefined } : DragLinesProps
 ) {
     const { ref: el, visible, setVisible, keyToDelete } = useDragLine({stateKey, droppableId});
 
@@ -96,7 +97,7 @@ export function DragLines(
     } : {}
 
     return (
-        <div className={Styles.draglines} data-image-role="drag">
+        <div className={Styles.draglines + ' ' + className} data-image-role="drag">
             {!draggable && <div className={Styles.draghandler} {...props}>
                 <img src={DragHandler} alt="" />
             </div>}
