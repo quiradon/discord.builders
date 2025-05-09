@@ -31,6 +31,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1; /* for thumbnail's spoiler */
     img {
         width: 32px;
         height: 32px;

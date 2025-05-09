@@ -33,5 +33,6 @@
         radial-gradient(at 0% 0%, hsla(231, 46%, 22%, 1) 0, transparent 100%),
         radial-gradient(at 50% 50%, hsla(321, 40%, 25%, 1) 0, transparent 100%);
     outline: 1px solid rgba(255, 255, 255, 0.2);
+    pointer-events: none;
   }
 }
