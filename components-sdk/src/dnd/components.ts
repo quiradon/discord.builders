@@ -169,6 +169,11 @@ export function getValidObj(comp: object, droppableId: DroppableID, randomizeId:
     return compValid;
 }
 
+function arraysEqual<T>(arr1: T[], arr2: T[]): boolean {
+  if (arr1.length !== arr2.length) return false;
+  return arr1.every((value, index) => value === arr2[index]);
+}
+
 export function customDropActions({
     stateManager,
     keyToDelete,
@@ -204,12 +209,17 @@ export function customDropActions({
             key,
             value: value,
         });
-        if (typeof keyToDelete?.stateKey !== 'undefined')
+        if (typeof keyToDelete?.stateKey !== 'undefined') {
+            if (arraysEqual(key.slice(0, -1), keyToDelete.stateKey)) {
+                return true; // Prevent deleting yourself
+            }
+
             stateManager.deleteKey({
-                key: keyToDelete?.stateKey,
-                removeKeyParent: keyToDelete?.removeKeyParent,
-                decoupleFrom: keyToDelete?.decoupleFrom,
+                key: keyToDelete.stateKey,
+                removeKeyParent: keyToDelete.removeKeyParent,
+                decoupleFrom: keyToDelete.decoupleFrom,
             });
+        }
         return true;
     }
 
