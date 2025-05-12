@@ -139,11 +139,11 @@ function App() {
                 </button>
             </div>
 
-            <p style={{marginTop: '0.5rem', marginBottom: '2rem', color: 'grey'}}>Warning: Non-link buttons and select menus are not allowed when sending message via webhook.</p>
+            <p style={{marginTop: '0.5rem', marginBottom: '2rem', color: 'grey'}}>Warning: Non-link buttons and select menus are not allowed when sending messages via webhook.</p>
 
             <div style={{marginBottom: '2rem'}}>
                 <p style={{marginBottom: '0.5rem'}}>Thread ID</p>
-                <input className={Styles.input} type="text" value={threadId || ""} onChange={ev => dispatch(actions.setThreadId(ev.target.value))} placeholder={"Optional. If you want to send message to thread, put thread ID here."}/>
+                <input className={Styles.input} type="text" value={threadId || ""} onChange={ev => dispatch(actions.setThreadId(ev.target.value))} placeholder={"Optional. If you want to send the message to a thread, put the thread ID here."}/>
             </div>
 
             <dialog ref={dialog} className={Styles.dialog}>
