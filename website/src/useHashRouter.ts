@@ -8,6 +8,9 @@ export function useHashRouter() {
     const currentHash = useRef<string | null>(null);
     const state = useSelector((state: RootState) => state.display.data)
 
+    // Default state is not seen in the URL.
+    const isDefault = useSelector((state: RootState) => state.display.isDefault)
+
     useEffect(() => {
         webhookImplementation.clean(state);
         if (currentHash === null) {
@@ -18,7 +21,7 @@ export function useHashRouter() {
         const getData = setTimeout(() => {
             const value = btoa(encodeURIComponent(JSON.stringify(state)));
             currentHash.current = value;  // infinite loop resolver
-            document.location.hash = value;
+            if (!isDefault) document.location.hash = value;
         }, 600)
 
         return () => clearTimeout(getData)
@@ -28,6 +31,8 @@ export function useHashRouter() {
         const handleChange = (event: {newURL: string}) => {
             const newHash = new URL(event.newURL).hash.substring(1);
             if (newHash === currentHash.current) return;
+            if (newHash === '') return;
+
             console.log("Loaded state from URL");
 
             let value;
