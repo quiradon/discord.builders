@@ -8,6 +8,7 @@ import {
     ComponentType,
 } from '../utils/componentTypes';
 import { useMemo } from 'react';
+import { useRandomString } from '../utils/useRegenerate';
 
 export function ActionRow({
     state,
@@ -18,12 +19,13 @@ export function ActionRow({
 }: ComponentsProps & { state: ActionRowComponent<ActionRowPossible> }) {
     const isStringSelect = (state?.components || []).find((component) => component.type === ComponentType.STRING_SELECT);
     const noComponents = state?.components?.length || 0;
+    const randomString = useRandomString();
 
     return (
         <div className={isStringSelect ? '' : Styles.action_row}>
             {(state?.components || []).map((component, index) => (
                 <ActionRowInner
-                    key={component.custom_id}
+                    key={component.custom_id || `${randomString}::${index}`}
                     stateKey={stateKey}
                     index={index}
                     passProps={passProps}
