@@ -112,6 +112,15 @@ export function MenuRange({min, max, state, stateKey, stateManager} : {
     stateKey: stateKeyType,
     stateManager: ComponentsProps['stateManager']
 }) {
+    if (max === 1) {
+        return <div className={Styles.menu_range}>
+            <Slider min={1} max={1} step={1} marks={[1]}
+                    value={state}
+                    onChange={(no: any) => stateManager.setKey({key: stateKey, value: no})}
+            />
+        </div>
+    }
+
     return <div className={Styles.menu_range}>
         <Slider min={min} max={max} step={1} marks={Array.from({length: max+1}, (_, i) => i)}
                 value={state}
