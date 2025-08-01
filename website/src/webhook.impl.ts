@@ -7,6 +7,7 @@ import {
     SectionComponent,
     setFileType
 } from "components-sdk";
+import { getFileNameType } from 'components-sdk/src/polyfills/files';
 
 
 export const webhookImplementation = {
@@ -14,10 +15,15 @@ export const webhookImplementation = {
         return window.uploadedFiles[name];
     }) as getFileType,
 
-    setFile: ((name, file) => {
+    setFile: (async (name, file) => {
         window.uploadedFiles[name] = file
         return `attachment://${name}`
     }) as setFileType,
+
+    getFileName: ((url: string) => {
+        const name = url.startsWith("attachment://") ? url.slice(13) : '';
+        return name || null;
+    }) as getFileNameType,
 
     scrapFiles(data: Component | Component[]): string[] {
         if (Array.isArray(data)) return data.flatMap(obj => this.scrapFiles(obj));
@@ -29,9 +35,9 @@ export const webhookImplementation = {
             const url = dataAsSection.accessory.media.url;
             if (url.startsWith("attachment://")) return [url.slice(13)]
         } else if (data.type === ComponentType.FILE) {
-            const dataAsSection = data as FileComponent;
+            const dataAsFile = data as FileComponent;
 
-            const url = dataAsSection.file.url;
+            const url = dataAsFile.file.url;
             if (url.startsWith("attachment://")) return [url.slice(13)]
         } else if (data.type === ComponentType.MEDIA_GALLERY) {
             const dataAsGallery = data as MediaGalleryComponent;
