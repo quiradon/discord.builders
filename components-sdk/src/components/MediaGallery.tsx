@@ -20,7 +20,7 @@ function getClass(len: number) {
 //   it can't be index as image flickers on higher sibling removal
 
 export function MediaGallery({state, stateKey, stateManager, passProps} : ComponentsProps & {state: MediaGalleryComponent}) {
-    return  <div className={Styles.gallery + ' ' + getClass((state?.items || []).length) }>
+    return <div className={Styles.gallery + ' ' + getClass((state?.items || []).length) }>
         {(state?.items || []).map((component, index) => {
             return <MediaGalleryInner
                 key={`${index}`}
@@ -34,7 +34,7 @@ export function MediaGallery({state, stateKey, stateManager, passProps} : Compon
     </div>
 }
 
-function MediaGalleryInner({state, stateKey, stateManager, passProps, index} : Omit<ComponentsProps, 'state'> & {state: MediaGalleryItem, index: number}) {
+function MediaGalleryInner({state, stateKey, stateManager, passProps, index} : Omit<ComponentsProps, 'state' | 'actionCallback'> & {state: MediaGalleryItem, index: number}) {
     const stateKeyCached = useMemo(() => [...stateKey, 'items', index], [...stateKey, 'items', index]);
 
     return <Thumbnail

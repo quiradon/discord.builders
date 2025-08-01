@@ -20,9 +20,10 @@ type props = {
     callback: (data: Component) => any,
     className?: string,
     style?: CSSProperties,
+    interactiveDisabled: boolean
 };
 
-export function CapsuleButton({context, callback, className, style} : props) {
+export function CapsuleButton({context, callback, className, style, interactiveDisabled} : props) {
     const {open, setOpen, ignoreRef} = useStateOpen(false);
     const cls = className ? " " + className : "";
     const btn_select = useRef<HTMLDivElement>(null);
@@ -68,7 +69,7 @@ export function CapsuleButton({context, callback, className, style} : props) {
                     <div className={Styles.large_button_ctx_item_img}><img src={SeparatorIcon} alt=""/></div>
                     <div className={Styles.large_button_ctx_item_text}>Separator</div>
                 </div>}
-                {['main', 'frame', 'container', 'button-row'].includes(context) && <div className={Styles.large_button_ctx_item} onClick={() => {
+                {(['main', 'frame', 'container', 'button-row'].includes(context) && !interactiveDisabled) && <div className={Styles.large_button_ctx_item} onClick={() => {
                     callback(context==='frame' ? default_settings.Button().components[0] : default_settings.Button())
                 }}>
                     <div className={Styles.large_button_ctx_item_img}><img src={ButtonIcon} alt=""/></div>
@@ -80,7 +81,7 @@ export function CapsuleButton({context, callback, className, style} : props) {
                     <div className={Styles.large_button_ctx_item_img}><img src={LinkButtonIcon} alt=""/></div>
                     <div className={Styles.large_button_ctx_item_text}>Button link</div>
                 </div>}
-                {['main', 'container', 'container'].includes(context) && <div className={Styles.large_button_ctx_item} onClick={() => {
+                {(['main', 'container', 'container'].includes(context) && !interactiveDisabled) && <div className={Styles.large_button_ctx_item} onClick={() => {
                     callback(default_settings.StringSelect())
                 }}>
                     <div className={Styles.large_button_ctx_item_img}><img src={SelectIcon} alt=""/></div>

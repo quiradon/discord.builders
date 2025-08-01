@@ -26,7 +26,7 @@ export function Thumbnail({
     className = undefined,
     droppableId = undefined,
     dragKeyToDeleteOverwrite = undefined,
-}: Omit<ComponentsProps, 'state'> & { state: MediaGalleryItem | ThumbnailComponent; className?: string }) {
+}: Omit<ComponentsProps, 'state' | 'actionCallback'> & { state: MediaGalleryItem | ThumbnailComponent; className?: string }) {
     const { open, setOpen, ignoreRef, closeLockRef } = useStateOpen(0);
     const btn_select = useRef<HTMLDivElement>(null);
 

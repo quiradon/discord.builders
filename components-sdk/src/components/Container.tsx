@@ -21,7 +21,7 @@ export function Container({
 }: ComponentsProps & { state: ContainerComponent }) {
     const ColorPicker = passProps.ColorPicker;
 
-    const hasColor = state.accent_color !== null;
+    const hasColor = state.accent_color != null;
     const colorHex =
         '#' +
         Number(state.accent_color || 0)

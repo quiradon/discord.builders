@@ -12,6 +12,7 @@ import { ColorPicker } from './ColorPicker';
 import { useHashRouter } from './useHashRouter';
 import { Codegen } from './Codegen';
 import { useRouter } from './useRouter';
+import { ActionMenu } from './ActionMenu';
 
 
 webhookImplementation.init();
@@ -39,14 +40,18 @@ function App() {
 
     const setFile = useCallback(webhookImplementation.setFile, []);
     const getFile = useCallback(webhookImplementation.getFile, [])
-    const passProps = useMemo(() => ({
+    const getFileName = useCallback(webhookImplementation.getFileName, [])
+    const passProps = useMemo((): PassProps => ({
         getFile,
+        getFileName,
         setFile,
         BetterInput,
         EmojiPicker,
         ColorPicker,
-        EmojiShow
-    } as PassProps), []);
+        // ActionMenu,
+        EmojiShow,
+        interactiveDisabled: false,
+    }), []);
 
     useEffect(() => {
         const getData = setTimeout(() => localStorage.setItem("discord.builders__webhookToken", webhookUrl), 1000)

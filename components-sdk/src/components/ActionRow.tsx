@@ -14,6 +14,7 @@ export function ActionRow({
     stateKey,
     stateManager,
     passProps,
+    actionCallback,
 }: ComponentsProps & { state: ActionRowComponent<ActionRowPossible> }) {
     const isStringSelect = (state?.components || []).find((component) => component.type === ComponentType.STRING_SELECT);
     const noComponents = state?.components?.length || 0;
@@ -22,13 +23,14 @@ export function ActionRow({
         <div className={isStringSelect ? '' : Styles.action_row}>
             {(state?.components || []).map((component, index) => (
                 <ActionRowInner
-                    key={index}
+                    key={component.custom_id}
                     stateKey={stateKey}
                     index={index}
                     passProps={passProps}
                     stateManager={stateManager}
                     state={component}
                     removeKeyParent={stateKey}
+                    actionCallback={actionCallback}
                 />
             ))}
 
@@ -41,6 +43,7 @@ export function ActionRow({
                             value: (val as ActionRowComponent<ButtonComponent>).components[0],
                         })
                     }
+                    interactiveDisabled={passProps.interactiveDisabled}
                 />
             )}
         </div>
@@ -52,5 +55,5 @@ function ActionRowInner(props: ComponentsProps & {state: ActionRowPossible, inde
     if (typeof Component === "undefined") return null;
     const stateKeyCached = useMemo(() => [...props.stateKey, "components", props.index], [...props.stateKey]);
 
-    return <Component stateKey={stateKeyCached} passProps={props.passProps} stateManager={props.stateManager} state={props.state} removeKeyParent={props.removeKeyParent} />;
+    return <Component stateKey={stateKeyCached} passProps={props.passProps} stateManager={props.stateManager} state={props.state} removeKeyParent={props.removeKeyParent} actionCallback={props.actionCallback} />;
 }
