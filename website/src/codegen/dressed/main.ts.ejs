@@ -19,10 +19,10 @@ function neededImports(components) {
     return components.reduce((acc, component)=> acc.union(neededImports(component.components ?? [])).union(new Set(component.accessory ? [builders[component.accessory.type]] :[])).add(builders[component.type]), new Set()); 
 } 
 -%>
-import { <%- [...neededImports(data.components)].join(", ") %> } from "@dressed/dressed";
+import { <%- [...neededImports(data.components)].join(", ") %> } from "dressed";
 
 const components = [
 <% data.components.forEach(function(comp){ -%>
-<%_ %><%- indent(include('/dressed/components.ts.ejs', {comp: comp}), 8); %>,
+<%_ %><%- indent(include('/dressed/components.ts.ejs', {comp: comp}), 4); %>,
 <% }); -%>
 ];
