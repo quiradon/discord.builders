@@ -1,32 +1,44 @@
-.not_found {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    color: #fff;
-
-    h1 {
-        font-size: 4rem;
-        margin-bottom: 2rem;
-        text-align: center;
-        color: #fff;
-    }
-
-    p {
-        font-size: 1.5rem;
-        text-align: center;
-        color: #fff;
-    }
-}
-
 .app {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-template-areas: "alert right" "left right";
   min-height: 100vh;
 
   @media (max-width: 1200px) {
-    grid-template-columns: 1fr;
+    grid-template-areas: "alert" "left" "right";
+  }
+
+  .alert {
+    grid-area: alert;
+    background: #7289da;
+    color: #fff;
+    font-size: 16px;
+    padding: 0 3rem;
+
+    a {
+      color: #fff;
+      text-decoration: underline;
+    }
+    button {
+      background: unset;
+      border: 1px solid #fff;
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+
+      &:hover {
+        background: white;
+        color: black;
+      }
+    }
+  }
+
+  .link {
+    cursor: pointer;
+    user-select: none;
+    color: #5865F2;
+    text-decoration: underline;
   }
 
   .badges {
@@ -41,6 +53,7 @@
   }
 
   .preview {
+    grid-area: left;
     border-radius: 0;
     min-height: 100vh;
 
@@ -49,6 +62,7 @@
     }
   }
   .json {
+    grid-area: right;
     padding: 2rem 4rem;
     background: #2f3136;
     font-size: 15px;
@@ -71,7 +85,6 @@
     h1 {
       font-size: 2.4rem;
       margin: 0;
-      color: #fff;
     }
 
     .data {

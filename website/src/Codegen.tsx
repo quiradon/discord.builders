@@ -68,7 +68,7 @@ export function Codegen({state, page, setPage} : {
 
     return (
         <>
-            <p style={{marginBottom: '1rem'}}>Code generator</p>
+            <p style={{marginBottom: '0.5rem', marginTop: '8rem'}}>Generator for programmers</p>
             <Select
                 styles={select_styles}
                 options={selectOptions}

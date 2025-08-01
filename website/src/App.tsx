@@ -34,6 +34,8 @@ function App() {
     const state = useSelector((state: RootState) => state.display.data)
     const webhookUrl = useSelector((state: RootState) => state.display.webhookUrl);
     const response = useSelector((state: RootState) => state.display.webhookResponse);
+    const showThread = useSelector((state: RootState) => state.display.showThread);
+    const isDefault = useSelector((state: RootState) => state.display.isDefault);
     const [page, setPage] = useRouter();
     const [postTitle, setPostTitle] = useState<string>("");
     useHashRouter();
@@ -78,6 +80,9 @@ function App() {
     const errors = useMemo(() => webhookImplementation.getErrors(response), [response]);
 
     const threadId = useMemo(() => getThreadId(webhookUrl), [webhookUrl]);
+    useEffect(() => {
+        if (threadId) dispatch(actions.setShowThread())
+    }, [threadId]);
 
     const sendMessage = async () => {
         const req = await fetch(String(parsed_url), webhookImplementation.prepareRequest(state))
@@ -111,9 +116,29 @@ function App() {
 
     const dialog = useRef<HTMLDialogElement>(null);
 
-    if (page === '404.not-found') return <div className={Styles.not_found}><h1>404 — Page not found</h1><p>Check the URL and try again or go back to <a href="/">home</a></p></div>
+    if (page === '404.not-found') {
+        if (!window.location.href.includes('/not-found')) window.location.href = '/not-found';
+        return <div><meta name="robots" content="noindex" /><h1>404 — Page not found</h1></div>;
+    }
 
     return <div className={Styles.app}>
+        {(isDefault && page === '200.home') && <div className={Styles.alert}>
+            <p>Hello,</p>
+            <p>This is the easiest tool to send custom Discord UI components like buttons, dropdowns and containers with drag and drop support.</p>
+
+            <p><b>Like our tool? Star us on GitHub!</b><br/><a href="https://github.com/StartITBot/discord.builders" target="_blank">https://github.com/StartITBot/discord.builders</a></p>
+            <p><button onClick={() => {
+                dispatch(actions.setKey({key: ['data'], value: []}));
+            }}>Clear everything</button></p>
+        </div>}
+        {(isDefault && page !== '200.home') && <div className={Styles.alert}>
+            <p>Hello,</p>
+            <p>Welcome to the code generator for <b>{page}</b>. A place for programmers to play around with new Discord components and instantly bring their ideas to life. </p>
+
+            <p><button onClick={() => {
+                dispatch(actions.setKey({key: ['data'], value: []}));
+            }}>Clear everything</button></p>
+        </div>}
         <ErrorBoundary fallback={<></>}>
             <Capsule state={state}
                      stateManager={stateManager}
@@ -134,6 +159,7 @@ function App() {
                      src="https://img.shields.io/github/commit-activity/t/StartITBot/discord.builders?style=for-the-badge&color=248045" />
             </div></a>
 
+            <p style={{marginBottom: '0.5rem', marginTop: '4rem'}}><span style={{fontSize: 16, color: 'white', fontWeight: '500'}}>Send message to Discord channel</span>{!showThread && <> (<span className={Styles.link} onClick={() => dispatch(actions.setShowThread())}>send to thread instead</span>) </>}</p>
             <div className={Styles.input_pair}>
                 <div>
                     <input className={Styles.input} placeholder={"Webhook link"} type="text" value={webhookUrl}
@@ -146,10 +172,10 @@ function App() {
 
             <p style={{marginTop: '0.5rem', marginBottom: '2rem', color: 'grey'}}>Warning: Non-link buttons and select menus are not allowed when sending messages via webhook.</p>
 
-            <div style={{marginBottom: '2rem'}}>
+            {showThread && <div style={{marginBottom: '2rem'}}>
                 <p style={{marginBottom: '0.5rem'}}>Thread ID</p>
                 <input className={Styles.input} type="text" value={threadId || ""} onChange={ev => dispatch(actions.setThreadId(ev.target.value))} placeholder={"Optional. If you want to send the message to a thread, put the thread ID here."}/>
-            </div>
+            </div>}
 
             <dialog ref={dialog} className={Styles.dialog}>
                 <form method="dialog"><button className={Styles.close}>✕</button></form>
@@ -168,6 +194,8 @@ function App() {
 
 
             <Codegen state={state} page={page} setPage={setPage} />
+
+            <p style={{textAlign: "right"}}>Project backed by the <a href={"https://startit.bot/"} target={"_blank"}>StartIT bot</a>.</p>
         </div>
     </div>
 }
