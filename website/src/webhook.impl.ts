@@ -78,7 +78,8 @@ export const webhookImplementation = {
         const form = new FormData();
         form.append('payload_json', data);
         files.map((filename, idx) => {
-            const blob = window.uploadedFiles[filename];
+            let blob = window.uploadedFiles[filename];
+            if (!blob) blob = new File([], filename, {type: "application/octet-stream"});
             form.append(`files[${idx}]`, blob, filename);
         })
         return {method: "POST", body: form, headers: {}}
