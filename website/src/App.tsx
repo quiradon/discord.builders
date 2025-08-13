@@ -12,7 +12,7 @@ import { ColorPicker } from './ColorPicker';
 import { useHashRouter } from './useHashRouter';
 import { Codegen } from './Codegen';
 import { useRouter } from './useRouter';
-import { ActionMenu } from './ActionMenu';
+import { Trans, useTranslation } from 'react-i18next';
 
 
 webhookImplementation.init();
@@ -120,20 +120,28 @@ function App() {
         if (!window.location.href.includes('/not-found')) window.location.href = '/not-found';
         return <div><meta name="robots" content="noindex" /><h1>404 — Page not found</h1></div>;
     }
+    
+    const { t } = useTranslation('website');
 
     return <div className={Styles.app}>
         {(isDefault && page === '200.home') && <div className={Styles.alert}>
-            <p>Hello,</p>
-            <p>This is the easiest tool to send custom Discord UI components like buttons, dropdowns and containers with drag and drop support.</p>
+            <p>{t('welcome.welcome')}</p>
+            <p>{t('welcome.home')}</p>
 
-            <p><b>Like our tool? Star us on GitHub!</b><br/><a href="https://github.com/StartITBot/discord.builders" target="_blank">https://github.com/StartITBot/discord.builders</a></p>
+            <p><Trans t={t} i18nKey={"welcome.github"} components={{
+                b: <b />,
+                br: <br />,
+                a: <a href="https://github.com/StartITBot/discord.builders" target="_blank"/>,
+            }} /></p>
             <p><button onClick={() => {
                 dispatch(actions.setKey({key: ['data'], value: []}));
-            }}>Clear everything</button></p>
+            }}>{t('welcome.clear')}</button></p>
         </div>}
         {(isDefault && page !== '200.home') && <div className={Styles.alert}>
-            <p>Hello,</p>
-            <p>Welcome to the code generator for <b>{page}</b>. A place for programmers to play around with new Discord components and instantly bring their ideas to life. </p>
+            <p>{t('welcome.welcome')}</p>
+            <p><Trans t={t} i18nKey={"welcome.codegen"} components={{
+                b: <b />,
+            }} values={{page: page}} /></p>
 
             <p><button onClick={() => {
                 dispatch(actions.setKey({key: ['data'], value: []}));
@@ -149,7 +157,7 @@ function App() {
             />
         </ErrorBoundary>
         <div className={Styles.json}>
-            <h1>discord.builders — Best webhook tool for Discord</h1>
+            <h1>discord.builders — {t('homepage.title')}</h1>
             <a href="https://github.com/StartITBot/discord.builders" target="_blank"><div className={Styles.badges}>
                 <img alt="Star on GitHub"
                      src="https://img.shields.io/github/stars/StartITBot/discord.builders?style=for-the-badge&logo=github&label=Star+on+GitHub&color=007ec6" />
@@ -159,31 +167,31 @@ function App() {
                      src="https://img.shields.io/github/commit-activity/t/StartITBot/discord.builders?style=for-the-badge&color=248045" />
             </div></a>
 
-            <p style={{marginBottom: '0.5rem', marginTop: '4rem'}}><span style={{fontSize: 16, color: 'white', fontWeight: '500'}}>Send message to Discord channel</span>{!showThread && <> (<span className={Styles.link} onClick={() => dispatch(actions.setShowThread())}>send to thread instead</span>) </>}</p>
+            <p style={{marginBottom: '0.5rem', marginTop: '4rem'}}><span style={{fontSize: 16, color: 'white', fontWeight: '500'}}>{t('webhook.title')}</span>{!showThread && <> (<span className={Styles.link} onClick={() => dispatch(actions.setShowThread())}>{t('webhook.thread')}</span>) </>}</p>
             <div className={Styles.input_pair}>
                 <div>
                     <input className={Styles.input} placeholder={"Webhook link"} type="text" value={webhookUrl}
                            onChange={ev => dispatch(actions.setWebhookUrl(ev.target.value))}/>
                 </div>
                 <button className={Styles.button} disabled={parsed_url == null} onClick={sendMessage}>
-                    Send
+                    {t('webhook.send')}
                 </button>
             </div>
 
-            <p style={{marginTop: '0.5rem', marginBottom: '2rem', color: 'grey'}}>Warning: Non-link buttons and select menus are not allowed when sending messages via webhook.</p>
+            <p style={{marginTop: '0.5rem', marginBottom: '2rem', color: 'grey'}}>{t('webhook.warning')}</p>
 
             {showThread && <div style={{marginBottom: '2rem'}}>
-                <p style={{marginBottom: '0.5rem'}}>Thread ID</p>
-                <input className={Styles.input} type="text" value={threadId || ""} onChange={ev => dispatch(actions.setThreadId(ev.target.value))} placeholder={"Optional. If you want to send the message to a thread, put the thread ID here."}/>
+                <p style={{marginBottom: '0.5rem'}}>{t('thread.id')}</p>
+                <input className={Styles.input} type="text" value={threadId || ""} onChange={ev => dispatch(actions.setThreadId(ev.target.value))} placeholder={t('thread.placeholder')}/>
             </div>}
 
             <dialog ref={dialog} className={Styles.dialog}>
                 <form method="dialog"><button className={Styles.close}>✕</button></form>
                 <div>
-                    <p className={Styles.input_name}>Post title</p>
-                    <input className={Styles.input} autoFocus={true} type="text" value={postTitle} onChange={ev => setPostTitle(ev.target.value)} placeholder={"Enter a title…"}/>
+                    <p className={Styles.input_name}>{t('thread.post.label')}</p>
+                    <input className={Styles.input} autoFocus={true} type="text" value={postTitle} onChange={ev => setPostTitle(ev.target.value)} placeholder={t('thread.post.placeholder')}/>
                 </div>
-                <div className={Styles.button} onClick={sendMessageWithTitle}>Send message</div>
+                <div className={Styles.button} onClick={sendMessageWithTitle}>{t('thread.post.button')}</div>
             </dialog>
 
             {!!response && <div className={Styles.data}
@@ -195,7 +203,9 @@ function App() {
 
             <Codegen state={state} page={page} setPage={setPage} />
 
-            <p style={{textAlign: "right"}}>Project backed by the <a href={"https://startit.bot/"} target={"_blank"}>StartIT bot</a>.</p>
+            <p style={{textAlign: "right"}}><Trans t={t} i18nKey={"author"} components={{
+                a: <a href={"https://startit.bot/?utm_source=discord.builders"} target={"_blank"} />
+            }} /></p>
         </div>
     </div>
 }
