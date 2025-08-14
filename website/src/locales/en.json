@@ -2,7 +2,7 @@
   "welcome.welcome": "Hello,",
   "welcome.home": "This is the easiest tool to send custom Discord UI components like buttons, dropdowns and containers with drag and drop support.",
   "welcome.github": "<b>Like our tool? Star us on GitHub!</b><br/><a>https://github.com/StartITBot/discord.builders</a>",
-  "welcome.codegen": "Welcome to the code generator for <b>{page}</b>. A place for programmers to play around with new Discord components and instantly bring their ideas to life.",
+  "welcome.codegen": "Welcome to the code generator for <b>{{page}}</b>. A place for programmers to play around with new Discord components and instantly bring their ideas to life.",
   "welcome.clear": "Clear everything",
   "homepage.title": "Best webhook tool for Discord",
   "webhook.title": "Send message to Discord channel",

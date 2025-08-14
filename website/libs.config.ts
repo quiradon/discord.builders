@@ -1,9 +1,11 @@
+export const supportedLngs = ['en', 'pl', 'de'] as const;
+
 export const libs: {
     [name: string]: {
         name: string;
         language: string;
         path: string;
-    }
+    };
 } = {
     dpp: {
         name: 'C++: DPP',
@@ -53,3 +55,16 @@ export const libs: {
         path: '/itsmybot-code-generator',
     },
 };
+
+
+export function translatePath(lang: typeof supportedLngs[number], path: string) {
+    if (path.endsWith('/')) path = path.slice(0, -1); // remove trailing slash
+
+    switch (lang) {
+        case 'pl':
+            return '/' + lang + path.replace('code-generator', 'generator-kodu');
+        default:
+            return '/' + lang + path;
+    }
+}
+

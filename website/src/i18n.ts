@@ -3,6 +3,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 import { BackendModule } from 'i18next'
 import { ComponentsSdkBackend } from 'components-sdk';
+import { supportedLngs } from '../libs.config';
 
 const Backend: BackendModule = {
     type: 'backend',
@@ -26,8 +27,6 @@ const Backend: BackendModule = {
     },
 }
 
-export const supportedLngs = ['en', 'pl'];
-
 i18next
     .use(Backend)
     .use(LanguageDetector)
@@ -35,11 +34,11 @@ i18next
     .init({
         ns: ['website', 'components-sdk'],
         defaultNS: 'website',
-        supportedLngs,
+        supportedLngs: supportedLngs,
 
         detection: {
             caches: ['cookie'],
-            order: ['querystring', 'cookie', 'navigator'],
+            order: ['path', 'cookie', 'navigator'],
             lookupCookie: 'lang',
             lookupQuerystring: 'lang',
         },
