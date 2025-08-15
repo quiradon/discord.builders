@@ -13,6 +13,8 @@ import { useHashRouter } from './useHashRouter';
 import { Codegen } from './Codegen';
 import { useRouter } from './useRouter';
 import { Trans, useTranslation } from 'react-i18next';
+import i18next from 'i18next';
+import { supportedLngs } from '../libs.config';
 
 
 webhookImplementation.init();
@@ -203,9 +205,16 @@ function App() {
 
             <Codegen state={state} page={page} setPage={setPage} />
 
-            <p style={{textAlign: "right"}}><Trans t={t} i18nKey={"author"} components={{
-                a: <a href={"https://startit.bot/?utm_source=discord.builders"} target={"_blank"} />
-            }} /></p>
+            <div className={Styles.footer}>
+                <div className={Styles.langs}>
+                    {supportedLngs.map((lang) => (
+                        <span key={lang} className={Styles.lang} onClick={() => i18next.changeLanguage(lang)}>{lang}</span>
+                    ))}
+                </div>
+                <div><Trans t={t} i18nKey={"author"} components={{
+                    a: <a href={"https://startit.bot/?utm_source=discord.builders"} target={"_blank"} />
+                }} /></div>
+            </div>
         </div>
     </div>
 }
