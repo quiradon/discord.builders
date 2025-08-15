@@ -32,6 +32,7 @@ import DescriptionPen from '../icons/DescriptionPen.svg';
 import { DragLines } from '../dnd/DragLine';
 import { ClosestType } from '../dnd/types';
 import { DroppableID } from '../dnd/components';
+import { useTranslation } from 'react-i18next';
 
 function getColor(style: ButtonStyle, disabled: boolean) {
     if (disabled)
@@ -129,52 +130,54 @@ function MenuFirst({state, stateKey, stateManager, setOpen, removeKeyParent, act
     removeKeyParent?: stateKeyType,
     actionCallback: ComponentsProps['actionCallback']
 }) {
+    const {t} = useTranslation('components-sdk');
+
     return <>
-        {(state.style !== ButtonStyle.URL && actionCallback != null) && <MenuOption src={Action} text={"Add action"} className={CapsuleStyles.highlight} onClick={(ev) => {
+        {(state.style !== ButtonStyle.URL && actionCallback != null) && <MenuOption src={Action} text={t("actions.add-action")} className={CapsuleStyles.highlight} onClick={(ev) => {
             setOpen(0);
             actionCallback(state.custom_id || null);
             ev.stopPropagation();
         }} />}
-        <MenuOption src={Emoji} text={state.emoji == null ? "Set emoji" : "Change emoji"} onClick={(ev) => {
+        <MenuOption src={Emoji} text={state.emoji == null ? t('button.set-emoji') : t('button.change-emoji')} onClick={(ev) => {
             setOpen(2);
             ev.stopPropagation();
         }}/>
-        {state.emoji != null && <MenuOption src={EmojiActive} text={"Clear emoji"} onClick={(ev) => {
+        {state.emoji != null && <MenuOption src={EmojiActive} text={t('button.clear-emoji')} onClick={(ev) => {
             stateManager.setKey({key: [...stateKey, "emoji"], value: null})
         }}/>}
-        <MenuOption src={DescriptionPen} text={"Change label"} onClick={(ev) => {
+        <MenuOption src={DescriptionPen} text={t('button.change-label')} onClick={(ev) => {
             setOpen(3);
             ev.stopPropagation();
         }} />
-        {state.style === ButtonStyle.URL && <MenuOption src={Url} text={"Change url"} onClick={(ev) => {
+        {state.style === ButtonStyle.URL && <MenuOption src={Url} text={t('button.change-url')} onClick={(ev) => {
             setOpen(4);
             ev.stopPropagation();
         }} />}
-        <MenuOption src={state.disabled ? LockActive : Lock} text={state.disabled ? "Mark as enabled" : "Mark as disabled"} onClick={(ev) => {
+        <MenuOption src={state.disabled ? LockActive : Lock} text={state.disabled ? t('button.mark-enabled') : t('button.mark-disabled')} onClick={(ev) => {
             stateManager.setKey({key: [...stateKey, "disabled"], value: !state.disabled});
             ev.stopPropagation();
         } }/>
 
         {state.style !== ButtonStyle.URL && <Fragment>
-            <MenuOption src={ColorBlue} text={"Set as Main action"} onClick={(ev) => {
+            <MenuOption src={ColorBlue} text={t('button.set-action-main')} onClick={(ev) => {
                 stateManager.setKey({key: [...stateKey, "style"], value: ButtonStyle.BLUE});
                 ev.stopPropagation();
             } }/>
-            <MenuOption src={ColorGrey} text={"Set as Secondary action"} onClick={(ev) => {
+            <MenuOption src={ColorGrey} text={t('button.set-action-secondary')} onClick={(ev) => {
                 stateManager.setKey({key: [...stateKey, "style"], value: ButtonStyle.GREY});
                 ev.stopPropagation();
             } }/>
-            <MenuOption src={ColorGreen} text={"Set as Confirmation"} onClick={(ev) => {
+            <MenuOption src={ColorGreen} text={t('button.set-action-confirmation')} onClick={(ev) => {
                 stateManager.setKey({key: [...stateKey, "style"], value: ButtonStyle.GREEN});
                 ev.stopPropagation();
             } }/>
-            <MenuOption src={ColorRed} text={"Set as Destructive"} onClick={(ev) => {
+            <MenuOption src={ColorRed} text={t('button.set-action-destructive')} onClick={(ev) => {
                 stateManager.setKey({key: [...stateKey, "style"], value: ButtonStyle.RED});
                 ev.stopPropagation();
             }}/>
         </Fragment>}
 
-        {!!removeKeyParent && <MenuOption src={TrashIcon} text={"Delete"} onClick={() => {
+        {!!removeKeyParent && <MenuOption src={TrashIcon} text={t('button.delete')} onClick={() => {
             stateManager.deleteKey({key: stateKey, removeKeyParent})
         }} />}
     </>
@@ -210,13 +213,14 @@ export function MenuEmoji({stateKey, stateManager, passProps} : {
     />
 }
 
-export function MenuLabel({state, stateKey, stateManager, setOpen, nullable = false, closeLockRef} : {
+export function MenuLabel({state, stateKey, stateManager, setOpen, nullable = false, closeLockRef, placeholder} : {
     state: string,
     stateKey: ComponentsProps['stateKey'],
     stateManager: ComponentsProps['stateManager'],
     setOpen: Dispatch<SetStateAction<number>>,
     nullable?: boolean,
-    closeLockRef: RefObject<any>
+    closeLockRef: RefObject<any>,
+    placeholder?: string
 }) {
     const ref = useRef<HTMLInputElement>(null);
     useImperativeHandle(closeLockRef, () => true);
@@ -230,7 +234,7 @@ export function MenuLabel({state, stateKey, stateManager, setOpen, nullable = fa
             type="text"
             value={state}
             className={text_display_input + ' ' + Styles.input}
-            placeholder="abcdefg"
+            placeholder={placeholder || "abcdefg"}
             onChange={(ev) => stateManager.setKey({
                 key: stateKey,
                 value: nullable ? (ev.target.value || null) : ev.target.value

@@ -1,5 +1,6 @@
 export { Capsule } from './Capsule';
 export * from "./utils/componentTypes";
+export  { ComponentsSdkBackend } from './I18nextBackend';
 
 // Polyfills
 

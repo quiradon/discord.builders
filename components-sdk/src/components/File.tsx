@@ -4,6 +4,7 @@ import {useFilePicker} from "use-file-picker";
 import {SelectedFiles} from "use-file-picker/types";
 import Styles from "./File.module.css"
 import FileIcon from "../icons/FileIcon.svg"
+import { useTranslation } from 'react-i18next';
 
 function sanitizeFilename(input: string) {
   return input
@@ -27,6 +28,7 @@ export function File({state, stateManager, stateKey, passProps} : ComponentsProp
             stateManager.setKey({key: [...stateKey, "file", "url"], value: link})
         },
     });
+    const {t} = useTranslation('components-sdk')
 
     const url = passProps.getFileName(state.file.url);
 
@@ -35,7 +37,7 @@ export function File({state, stateManager, stateKey, passProps} : ComponentsProp
             <img src={FileIcon} width={32} height={32} alt=''/>
         </div>
         <div className={Styles.file_text}>
-            {url || "Click to upload file"}
+            {url || t('file.upload-file')}
         </div>
     </div>
 }

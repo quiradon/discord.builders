@@ -9,8 +9,9 @@ import { ComponentsProps } from '../Capsule';
 import { ContainerComponent } from '../utils/componentTypes';
 import { useStateOpen } from '../utils/useStateOpen';
 import { DroppableID } from '../dnd/components';
-import { useMemo } from 'react';
+import { useMemo, useTransition } from 'react';
 import { flattenErrorsWithoutComponents, hasErrorsWithoutComponents } from '../errors';
+import { useTranslation } from 'react-i18next';
 
 export function Container({
     state,
@@ -31,6 +32,7 @@ export function Container({
     const stateKeyComponents = useMemo(() => [...stateKey, 'components'], [...stateKey]);
 
     const hasErrors = errors ? hasErrorsWithoutComponents(errors) : false;
+    const { t } = useTranslation('components-sdk');
 
     return (
         <div className={Styles.embed + ' ' + (state.spoiler ? Styles.spoiler : '')}>
@@ -82,7 +84,7 @@ export function Container({
             </div>
 
             <div>
-                {hasErrors && flattenErrorsWithoutComponents(errors!).map((error, i) => <div key={i} className={CapsuleStyles.error}><b>Error:</b> {error}</div>)}
+                {hasErrors && flattenErrorsWithoutComponents(errors!).map((error, i) => <div key={i} className={CapsuleStyles.error}><b>{t('error')}</b> {error}</div>)}
             </div>
         </div>
     );
