@@ -29,10 +29,10 @@ function findPage(path: string): string {
 
 function firstLoadPage(): string {
     const page = findPage(window.location.pathname);
-    if (page === "200.home" && !isCrawler()) {
+    if (window.location.pathname === "/" && !isCrawler()) {
         const cacheLib = localStorage.getItem("discord.builders__selectedLib");
         const libPath = cacheLib && findPath(cacheLib);
-        if (libPath) {
+        if (libPath && libPath !== "/") {
             redirect(libPath);
             return cacheLib;
         }
