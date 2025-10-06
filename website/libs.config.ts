@@ -1,4 +1,5 @@
-export const supportedLngs = ['en', 'pl', 'de', 'es', 'pt'] as const;
+export const supportedLngs = ['en', 'pl', 'de', 'es', 'ca', 'pt'] as const;
+
 
 export const libs: {
     [name: string]: {
@@ -79,4 +80,3 @@ export function translatePath(lang: typeof supportedLngs[number], path: string) 
             return '/' + lang + path;
     }
 }
-
